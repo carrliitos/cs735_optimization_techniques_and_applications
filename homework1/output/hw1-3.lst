@@ -1,0 +1,145 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/05/24 19:22:19 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  * Problem 3: Maximize 5(x1 + 2x2) - 11(x2 - x3)
+   2  * subject to
+   3  * 3x1 >= sum(j, x(j))
+   4  * 0 <= x(j) <= 3 for j = 1, ..., 3
+   5   
+   6  option limrow=0, limcol=0;
+   7   
+   8  * Sets and parameters
+   9  set J /1*3/;
+  10  positive variables x(J);
+  11  variables obj;
+  12   
+  13  * Equations
+  14  equations objdef, ineq1;
+  15   
+  16  * Define objective function
+  17  objdef.. obj =e= 5*(x('1') + 2*x('2')) - 11*(x('2') - x('3'));
+  18   
+  19  * Define constraints
+  20  ineq1.. 3*x('1') =g= sum(J, x(J));
+  21   
+  22  * Bounds
+  23  x.lo(J) = 0;
+  24  x.up(J) = 3;
+  25   
+  26  * Model definition
+  27  model prob3 /all/;
+  28   
+  29  * Solve the model
+  30  solve prob3 maximizing obj using lp;
+  31   
+  32  * Retrieve and display results
+  33  parameter xval(*), xlo(*), xup(*), objval;
+  34  xval(J) = x.l(J);
+  35  xlo(J) = x.lo(J);
+  36  xup(J) = x.up(J);
+  37  objval = obj.l;
+  38   
+  39  display objval, xval, xlo, xup;
+
+
+COMPILATION TIME     =        0.001 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/05/24 19:22:19 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE prob3 Using LP From line 30
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [        NA,        NA] - Zero values observed as well
+Bound     [min, max] : [ 3.000E+00, 3.000E+00] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 1.100E+01]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/05/24 19:22:19 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE prob3 Using LP From line 30
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           2     SINGLE EQUATIONS            2
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES            4
+NON ZERO ELEMENTS             7
+
+
+GENERATION TIME      =        0.002 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/05/24 19:22:19 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE prob3 Using LP From line 30
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   prob3               OBJECTIVE  obj
+     TYPE    LP                  DIRECTION  MAXIMIZE
+     SOLVER  COPT                FROM LINE  30
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE               48.0000
+
+ RESOURCE USAGE, LIMIT          0.001 10000000000.000
+ ITERATION COUNT, LIMIT         0    2147483647
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU objdef              .              .              .             1.0000      
+---- EQU ineq1               .             3.0000        +INF             .          
+
+---- VAR x  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .             3.0000         3.0000         5.0000      
+2          .              .             3.0000        -1.0000      
+3          .             3.0000         3.0000        11.0000      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR obj               -INF           48.0000        +INF             .          
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/05/24 19:22:19 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     39 PARAMETER objval               =       48.000  
+
+----     39 PARAMETER xval  
+
+1 3.000,    3 3.000
+
+
+----     39 PARAMETER xlo  
+
+                      ( ALL       0.000 )
+
+
+----     39 PARAMETER xup  
+
+1 3.000,    2 3.000,    3 3.000
+
+
+
+EXECUTION TIME       =        0.024 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework1/hw1-3.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework1/hw1-3.lst
