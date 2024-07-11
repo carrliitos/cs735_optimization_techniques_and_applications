@@ -1,0 +1,68 @@
+--- Job hw2-3.gms Start 07/11/24 00:06:07 47.2.0 54a8429d LEX-LEG x86 64bit/Linux
+--- Applying:
+    /opt/gams/gams47.2_linux_x64_64_sfx/gmsprmun.txt
+--- GAMS Parameters defined
+    Input /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework2/gams/hw2-3.gms
+    Output /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework2/output/hw2-3.lst
+    ScrDir /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework2/225a/
+    SysDir /opt/gams/gams47.2_linux_x64_64_sfx/
+Licensee: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+          COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+          /opt/gams/gams47.2_linux_x64_64_sfx/gamslice.txt
+          License Admin: Athula Gunawardena, gunawara@uww.edu              
+          Course license for use within the course and related course work
+          The evaluation period of the license will expire on Aug 15, 2024
+Processor information: 1 socket(s), 2 core(s), and 4 thread(s) available
+GAMS 47.2.0   Copyright (C) 1987-2024 GAMS Development. All rights reserved
+--- Starting compilation
+--- hw2-3.gms(78) 3 Mb
+--- Starting execution: elapsed 0:00:00.024
+--- hw2-3.gms(1) 4 Mb
+--- Generating LP model prob3
+--- hw2-3.gms(72) 4 Mb
+---   9 rows  17 columns  49 non-zeroes
+--- Range statistics (absolute non-zero finite values)
+--- RHS       [min, max] : [ 3.500E+00, 1.700E+03] - Zero values observed as well
+--- Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+--- Matrix    [min, max] : [ 1.000E+00, 2.800E+02]
+--- Executing COPT (Solvelink=2): elapsed 0:00:00.026
+
+COPT             47.2.0 54a8429d Jul 1, 2024           LEG x86 64bit/Linux    
+
+Passing GAMS variable and equation levels and marginals as LP starting point to COPT.
+
+Cardinal Optimizer v7.1.4. Build date Jun 27 2024
+Copyright Cardinal Operations 2024. All Rights Reserved
+
+Modified COPT parameters:
+TimeLimit                 1e+10
+AbsGap                    0
+LogToConsole              0
+ReqFarkasRay              1
+
+Model fingerprint: a2469e94
+
+Using Cardinal Optimizer v7.1.4 on Linux
+Hardware has 2 cores and 4 threads. Using instruction set X86_SSE4_2 (8)
+Maximizing an LP problem
+
+The original problem has:
+    8 rows, 16 columns and 32 non-zero elements
+The presolved problem has:
+    8 rows, 16 columns and 32 non-zero elements
+
+Starting the simplex solver using up to 4 threads
+
+Method   Iteration           Objective  Primal.NInf   Dual.NInf        Time
+Dual             0    3.7165294318e+06            4           0       0.00s
+Dual             6    1.1639824522e+06            0           0       0.00s
+Postsolving
+Dual             6    1.1639637273e+06            0           0       0.00s
+
+Solving finished
+Status: Optimal  Objective: 1.1639637273e+06  Iterations: 6  Time: 0.00s
+--- Reading solution for model prob3
+--- Executing after solve: elapsed 0:00:00.051
+--- hw2-3.gms(78) 4 Mb
+*** Status: Normal completion
+--- Job hw2-3.gms Stop 07/11/24 00:06:07 elapsed 0:00:00.052

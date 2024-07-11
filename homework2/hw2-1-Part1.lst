@@ -1,0 +1,182 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/10/24 23:02:22 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  option limrow = 0, limcol = 0;
+   2   
+   3  set L  /1*5/;
+   4   
+   5  alias(L,nL);
+   6   
+   7  Parameters
+   8     x(L) x-coordinates
+   9     / 1 36
+  10       2 23
+  11       3 23
+  12       4 10
+  13       5 5   /
+  14   
+  15     y(L) y-coordinates
+  16     / 1 20
+  17       2 30
+  18       3 56
+  19       4 15
+  20       5 5  /
+  21   
+  22     d(L) projected demand
+  23     / 1 7
+  24       2 3
+  25       3 2
+  26       4 4
+  27       5 2 /
+  28   
+  29     s(L) units currently assigned
+  30     /  1 6
+  31        2 2
+  32        3 3
+  33        4 3
+  34        5 4 /;
+  35   
+  36  Parameter dist(L,nL) distance;
+  37  dist(L,nL) = sqrt( (x(nL) - x(L))*(x(nL) - x(L)) + (y(nL) - y(L))*(y(nL) - y(L)));
+  38   
+  39  Scalar c cost per kilometer /100/;
+  40   
+  41  Variable
+  42    obj;
+  43   
+  44  Positive Variable
+  45    z(L,nL);
+  46   
+  47  Equations
+  48     objective
+  49     balance(L);
+  50   
+  51  objective.. sum((L,nL), dist(L,nL)*c*z(L,nL)) =e= obj;
+  52   
+  53  balance(L) .. sum(nL, z(nL,L)) + s(L) =e= d(L) + sum(nL, z(L,nL)) ;
+  54   
+  55   
+  56  Model AirAmbulance /objective, balance/ ;
+  57  Solve AirAmbulance  using lp minimizing obj;
+  58  Display z.l;
+  59   
+
+
+COMPILATION TIME     =        0.001 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/10/24 23:02:22 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE AirAmbulance Using LP From line 57
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 1.000E+00, 2.000E+00] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 5.408E+03]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/10/24 23:02:22 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE AirAmbulance Using LP From line 57
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           2     SINGLE EQUATIONS            6
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES           21
+NON ZERO ELEMENTS            61
+
+
+GENERATION TIME      =        0.097 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/10/24 23:02:22 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE AirAmbulance Using LP From line 57
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   AirAmbulance        OBJECTIVE  obj
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  COPT                FROM LINE  57
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE             7161.8691
+
+ RESOURCE USAGE, LIMIT          0.022 10000000000.000
+ ITERATION COUNT, LIMIT         5    2147483647
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU objective           .              .              .            -1.0000      
+
+---- EQU balance  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1         1.0000         1.0000         1.0000      2325.8011      
+2         1.0000         1.0000         1.0000      1962.5504      
+3        -1.0000        -1.0000        -1.0000      -637.4496      
+4         1.0000         1.0000         1.0000          .          
+5        -2.0000        -2.0000        -2.0000     -1118.0340      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR obj               -INF         7161.8691        +INF             .          
+
+---- VAR z  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+1.2          .              .            +INF         2003.3727      
+1.3          .              .            +INF         6790.7826      
+1.4          .              .            +INF         4973.4415      
+1.5          .              .            +INF         6887.6701      
+2.1          .              .            +INF         1276.8712      
+2.3          .              .            +INF         5200.0000      
+2.4          .              .            +INF         3947.4937      
+2.5          .              .            +INF         6161.1687      
+3.1          .              .            +INF          864.2811      
+3.2          .             1.0000        +INF             .          
+3.4          .              .            +INF         3663.7130      
+3.5          .              .            +INF         5888.9113      
+4.1          .              .            +INF          321.8394      
+4.2          .              .            +INF           22.3930      
+4.3          .              .            +INF         4938.6123      
+4.5          .              .            +INF         2236.0680      
+5.1          .             1.0000        +INF             .          
+5.2          .              .            +INF             .          
+5.3          .              .            +INF         4927.7426      
+5.4          .             1.0000        +INF             .          
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/10/24 23:02:22 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     58 VARIABLE z.L  
+
+            1           2           4
+
+3                   1.000
+5       1.000                   1.000
+
+
+
+EXECUTION TIME       =        0.821 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework2/hw2-1-Part1.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework2/hw2-1-Part1.lst

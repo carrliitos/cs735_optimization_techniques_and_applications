@@ -1,0 +1,212 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/11/24 00:06:07 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  option limrow = 0, limcol = 0;
+   2   
+   3  * Set and Definitions
+   4  set I /P, S, W, H/;
+   5  set J /1, 2, 3, 4/;
+   6   
+   7  * Parameters
+   8  parameters
+   9  yield(J, I) "Expected annual yield (m^3/ka)"
+  10  / 1.P 17, 1.S 14, 1.W 10, 1.H 9,
+  11    2.P 15, 2.S 16, 2.W 12, 2.H 11,
+  12    3.P 13, 3.S 12, 3.W 14, 3.H 8,
+  13    4.P 10, 4.S 11, 4.W 8, 4.H 6 /;
+  14   
+  15  parameters
+  16  price(I) "Expected annual revenue (money units per ka)"
+  17  / P 16, S 12, W 20, H 18 /;
+  18   
+  19  parameters
+  20  area(J) "Area available in ka"
+  21  / 1 1500, 2 1700, 3 900, 4 600 /;
+  22   
+  23  scalar
+  24  minYieldP "Minimum required yield for Pine" / 22.5 /;
+  25  scalar
+  26  minYieldS "Minimum required yield for Spruce" / 9 /;
+  27  scalar
+  28  minYieldW "Minimum required yield for Walnut" / 4.8 /;
+  29  scalar
+  30  minYieldH "Minimum required yield for Hardwood" / 3.5 /;
+  31   
+  32  * Variables
+  33  positive variables
+  34  x(J, I) "Area devoted to each species at each site";
+  35   
+  36  variable
+  37  obj "Total profit";
+  38   
+  39  * Equations
+  40  equations
+  41  objective "Objective function to maximize profit",
+  42  consYieldP "Minimum yield constraint for Pine",
+  43  consYieldS "Minimum yield constraint for Spruce",
+  44  consYieldW "Minimum yield constraint for Walnut",
+  45  consYieldH "Minimum yield constraint for Hardwood",
+  46  consArea(J) "Area constraint for each site";
+  47   
+  48  * Objective Function
+  49  objective..
+  50  obj =e= sum(J, sum(I, price(I) * yield(J,I) * x(J,I)));
+  51   
+  52  * Constraints
+  53  consYieldP..
+  54  sum(J, yield(J, 'P') * x(J, 'P')) =g= minYieldP;
+  55   
+  56  consYieldS..
+  57  sum(J, yield(J, 'S') * x(J, 'S')) =g= minYieldS;
+  58   
+  59  consYieldW..
+  60  sum(J, yield(J, 'W') * x(J, 'W')) =g= minYieldW;
+  61   
+  62  consYieldH..
+  63  sum(J, yield(J, 'H') * x(J, 'H')) =g= minYieldH;
+  64   
+  65  consArea(J)..
+  66  sum(I, x(J, I)) =l= area(J);
+  67   
+  68  * Model Definition
+  69  model prob3 /all/;
+  70   
+  71  * Solve Statement
+  72  solve prob3 using lp maximizing obj;
+  73   
+  74  * Display Solution
+  75  parameter objval;
+  76  objval = obj.l;
+  77   
+  78  display x.l, objval;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/11/24 00:06:07 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE prob3 Using LP From line 72
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 3.500E+00, 1.700E+03] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 2.800E+02]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/11/24 00:06:07 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE prob3 Using LP From line 72
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           6     SINGLE EQUATIONS            9
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES           17
+NON ZERO ELEMENTS            49
+
+
+GENERATION TIME      =        0.002 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/11/24 00:06:07 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE prob3 Using LP From line 72
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   prob3               OBJECTIVE  obj
+     TYPE    LP                  DIRECTION  MAXIMIZE
+     SOLVER  COPT                FROM LINE  72
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE          1163963.7273
+
+ RESOURCE USAGE, LIMIT          0.002 10000000000.000
+ ITERATION COUNT, LIMIT         6    2147483647
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU objective           .              .              .             1.0000      
+---- EQU consYieldP        22.5000     25500.0000        +INF             .          
+---- EQU consYieldS         9.0000         9.0000        +INF           -2.5455      
+---- EQU consYieldW         4.8000     37789.6364        +INF             .          
+---- EQU consYieldH         3.5000         3.5000        +INF           -3.8182      
+
+  objective  Objective function to maximize profit
+  consYieldP  Minimum yield constraint for Pine
+  consYieldS  Minimum yield constraint for Spruce
+  consYieldW  Minimum yield constraint for Walnut
+  consYieldH  Minimum yield constraint for Hardwood
+
+---- EQU consArea  Area constraint for each site
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1        -INF         1500.0000      1500.0000       272.0000      
+2        -INF         1700.0000      1700.0000       240.0000      
+3        -INF          900.0000       900.0000       280.0000      
+4        -INF          600.0000       600.0000       160.0000      
+
+---- VAR x  Area devoted to each species at each site
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+1.P          .          1500.0000        +INF             .          
+1.S          .              .            +INF          -68.3636      
+1.W          .              .            +INF          -72.0000      
+1.H          .              .            +INF          -75.6364      
+2.P          .              .            +INF            EPS         
+2.S          .              .            +INF           -7.2727      
+2.W          .          1699.6818        +INF             .          
+2.H          .             0.3182        +INF             .          
+3.P          .              .            +INF          -72.0000      
+3.S          .              .            +INF         -105.4545      
+3.W          .           900.0000        +INF             .          
+3.H          .              .            +INF         -105.4545      
+4.P          .              .            +INF            EPS         
+4.S          .             0.8182        +INF             .          
+4.W          .           599.1818        +INF             .          
+4.H          .              .            +INF          -29.0909      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR obj               -INF      1163963.7273        +INF             .          
+
+  obj  Total profit
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/11/24 00:06:07 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     78 VARIABLE x.L  Area devoted to each species at each site
+
+            P           S           W           H
+
+1    1500.000
+2                            1699.682       0.318
+3                             900.000
+4                   0.818     599.182
+
+
+----     78 PARAMETER objval               =  1163963.727  
+
+
+EXECUTION TIME       =        0.027 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework2/gams/hw2-3.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework2/output/hw2-3.lst

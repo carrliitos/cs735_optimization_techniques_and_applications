@@ -34,3 +34,9 @@ nonlinear programs.
 - Heuristics and approximation algorithms
 - Dynamic programming
 - Applications of nonlinear optimization
+
+#### Command to run gams
+
+``` bash
+gams gams/hw2-1.gms output=output/hw2-1.lst > logs/hw2-1.txt
+```

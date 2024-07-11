@@ -1,0 +1,281 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/10/24 23:13:40 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  option limrow = 0, limcol = 0;
+   2   
+   3  set L  /1*5/;
+   4  alias(L,nL);
+   5   
+   6  Parameters
+   7     x(L) x-coordinates
+   8     / 1 36
+   9       2 23
+  10       3 23
+  11       4 10
+  12       5 5   /
+  13   
+  14     y(L) y-coordinates
+  15     / 1 20
+  16       2 30
+  17       3 56
+  18       4 15
+  19       5 5  /
+  20   
+  21     d(L) projected demand
+  22     / 1 7
+  23       2 3
+  24       3 2
+  25       4 4
+  26       5 2 /
+  27   
+  28     s(L) units currently assigned
+  29     /  1 6
+  30        2 2
+  31        3 3
+  32        4 3
+  33        5 4 /;
+  34   
+  35  Parameter dist(L,nL) distance;
+  36  dist(L,nL) = sqrt( (x(nL) - x(L))*(x(nL) - x(L)) + (y(nL) - y(L))*(y(nL) - y(L)));
+  37   
+  38  Scalar c cost per kilometer /100/;
+  39   
+  40  Variable
+  41    obj;
+  42   
+  43  Positive Variable
+  44    z(L,nL);
+  45   
+  46  Equations
+  47     objective
+  48     balance(L)
+  49     constraint_no_reassign;
+  50   
+  51  objective.. sum((L,nL), dist(L,nL)*c*z(L,nL)) =e= obj;
+  52   
+  53  balance(L) .. sum(nL, z(nL,L)) + s(L) =e= d(L) + sum(nL, z(L,nL));
+  54   
+  55  constraint_no_reassign .. z('3','2') =e= 0;
+  56   
+  57  * Solve the original model
+  58  Model AirAmbulanceOriginal /objective, balance/ ;
+  59  Solve AirAmbulanceOriginal using lp minimizing obj;
+  60   
+  61  * Solve the new model with the additional constraint
+  62  Model AirAmbulanceNew /objective, balance, constraint_no_reassign/ ;
+  63  Solve AirAmbulanceNew using lp minimizing obj;
+  64   
+  65  Display z.l;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/10/24 23:13:40 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE AirAmbulanceOriginal Using LP From line 59
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 1.000E+00, 2.000E+00] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 5.408E+03]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/10/24 23:13:40 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE AirAmbulanceOriginal Using LP From line 59
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           2     SINGLE EQUATIONS            6
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES           21
+NON ZERO ELEMENTS            61
+
+
+GENERATION TIME      =        0.002 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/10/24 23:13:40 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE AirAmbulanceOriginal Using LP From line 59
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   AirAmbulanceOriginal   OBJECTIVE  obj
+     TYPE    LP                     DIRECTION  MINIMIZE
+     SOLVER  COPT                   FROM LINE  59
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE             7161.8691
+
+ RESOURCE USAGE, LIMIT          0.001 10000000000.000
+ ITERATION COUNT, LIMIT         5    2147483647
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU objective           .              .              .            -1.0000      
+
+---- EQU balance  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1         1.0000         1.0000         1.0000      2325.8011      
+2         1.0000         1.0000         1.0000      1962.5504      
+3        -1.0000        -1.0000        -1.0000      -637.4496      
+4         1.0000         1.0000         1.0000          .          
+5        -2.0000        -2.0000        -2.0000     -1118.0340      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR obj               -INF         7161.8691        +INF             .          
+
+---- VAR z  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+1.2          .              .            +INF         2003.3727      
+1.3          .              .            +INF         6790.7826      
+1.4          .              .            +INF         4973.4415      
+1.5          .              .            +INF         6887.6701      
+2.1          .              .            +INF         1276.8712      
+2.3          .              .            +INF         5200.0000      
+2.4          .              .            +INF         3947.4937      
+2.5          .              .            +INF         6161.1687      
+3.1          .              .            +INF          864.2811      
+3.2          .             1.0000        +INF             .          
+3.4          .              .            +INF         3663.7130      
+3.5          .              .            +INF         5888.9113      
+4.1          .              .            +INF          321.8394      
+4.2          .              .            +INF           22.3930      
+4.3          .              .            +INF         4938.6123      
+4.5          .              .            +INF         2236.0680      
+5.1          .             1.0000        +INF             .          
+5.2          .              .            +INF             .          
+5.3          .              .            +INF         4927.7426      
+5.4          .             1.0000        +INF             .          
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/10/24 23:13:40 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE AirAmbulanceNew Using LP From line 63
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 1.000E+00, 2.000E+00] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 5.408E+03]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/10/24 23:13:40 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE AirAmbulanceNew Using LP From line 63
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           3     SINGLE EQUATIONS            7
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES           21
+NON ZERO ELEMENTS            62
+
+
+GENERATION TIME      =        0.001 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/10/24 23:13:40 Page 7
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE AirAmbulanceNew Using LP From line 63
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   AirAmbulanceNew     OBJECTIVE  obj
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  COPT                FROM LINE  63
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE             8026.1502
+
+ RESOURCE USAGE, LIMIT          0.001 10000000000.000
+ ITERATION COUNT, LIMIT         1    2147483647
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU objective           .              .              .            -1.0000      
+
+---- EQU balance  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1         1.0000         1.0000         1.0000      2325.8011      
+2         1.0000         1.0000         1.0000      1962.5504      
+3        -1.0000        -1.0000        -1.0000     -1501.7308      
+4         1.0000         1.0000         1.0000          .          
+5        -2.0000        -2.0000        -2.0000     -1118.0340      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU constrain~          .              .              .          -864.2811      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR obj               -INF         8026.1502        +INF             .          
+
+---- VAR z  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+1.2          .              .            +INF         2003.3727      
+1.3          .              .            +INF         7655.0637      
+1.4          .              .            +INF         4973.4415      
+1.5          .              .            +INF         6887.6701      
+2.1          .              .            +INF         1276.8712      
+2.3          .              .            +INF         6064.2811      
+2.4          .              .            +INF         3947.4937      
+2.5          .              .            +INF         6161.1687      
+3.1          .             1.0000        +INF             .          
+3.2          .              .            +INF             .          
+3.4          .              .            +INF         2799.4319      
+3.5          .              .            +INF         5024.6301      
+4.1          .              .            +INF          321.8394      
+4.2          .              .            +INF           22.3930      
+4.3          .              .            +INF         5802.8934      
+4.5          .              .            +INF         2236.0680      
+5.1          .              .            +INF             .          
+5.2          .             1.0000        +INF             .          
+5.3          .              .            +INF         5792.0237      
+5.4          .             1.0000        +INF             .          
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/10/24 23:13:40 Page 8
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     65 VARIABLE z.L  
+
+            1           2           4
+
+3       1.000
+5                   1.000       1.000
+
+
+
+EXECUTION TIME       =        0.056 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework2/gams/hw2-1.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework2/output/hw2-1.lst

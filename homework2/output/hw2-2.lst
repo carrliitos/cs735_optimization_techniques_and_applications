@@ -1,0 +1,197 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/10/24 23:55:46 Page 1
+Homework 2 part 2 Steelco Company
+C o m p i l a t i o n
+
+
+   2  option limrow = 0, limcol = 0;
+   3   
+   4  * SET AND DEFINITIONS
+   5  set I /C, Cu, Mn/;
+   6  set J /1, 2, 3, 4, 5, 6, 7/;
+   7   
+   8  parameters
+   9  c(J) "Cost per ton" / "1" 200, "2" 250, "3" 150, "4" 220, "5" 240, "6" 200, "7" 165/
+  10  a(J) "Availability" / "1" 400, "2" 300, "3" 600, "4" 500, "5" 200, "6" 300, "7" 250/
+  11  min(I) "minimum grade"  / "C" 2, "Cu" 0.4, "Mn" 1.2/
+  12  max(I) "maximum grade"  / "C" 3, "Cu" 0.6, "Mn" 1.65/;
+  13   
+  14  Table g(I,J) grades
+  15           1       2       3       4       5       6       7
+  16        C  2.5     3       0       0       0       0       0
+  17        Cu 0       0       0.3     90      96      0.4     0.6
+  18        Mn 1.3     0.8     0       0       4       1.2     0   ;
+  19   
+  20  scalar
+  21  weightorder "in tons" /500/;
+  22   
+  23  * VARIABLE AND EQUATION DECLARATIONS
+  24  free variable
+  25  obj "objective",
+  26  totalWeight;
+  27   
+  28  positive variables
+  29  x(J) "Raw materials in tons";
+  30   
+  31  equations
+  32  objective "objective",
+  33  cons1 "total weight",
+  34  cons2(I) "min grade",
+  35  cons3(I) "max grade",
+  36  cons4(J) "max available";
+  37   
+  38  * EQUATION (MODEL) DEFINITION
+  39  objective..
+  40  obj =e= sum(J, c(J) * x(J));
+  41   
+  42  cons1..
+  43  totalWeight =e= sum(J, x(J));
+  44   
+  45  cons2(I)..
+  46  (sum(J, g(I, J) * x(J) / 100)) =g= (min(I) / 100) * totalWeight;
+  47   
+  48  cons3(I)..
+  49  (sum(J, g(I, J) * x(J) / 100)) =l= (max(I) / 100) * totalWeight;
+  50   
+  51  cons4(J)..
+  52  x(J) =l= a(J);
+  53   
+  54  * VARIBLE BOUNDS
+  55  totalWeight.lo = weightorder;
+  56   
+  57  model prob2 /all/;
+  58   
+  59  solve prob2 using lp minimizing obj;
+  60   
+  61  parameter objval, pct(I);
+  62  objval = obj.l;
+  63  pct(I) = (sum(J, (g(I,J) / 100) * x.l(J)) / weightorder) * 100;
+  64  display objval, pct;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/10/24 23:55:46 Page 2
+Homework 2 part 2 Steelco Company
+Range Statistics    SOLVE prob2 Using LP From line 59
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 2.000E+02, 6.000E+02] - Zero values observed as well
+Bound     [min, max] : [ 5.000E+02, 5.000E+02] - Zero values observed as well
+Matrix    [min, max] : [ 3.000E-03, 2.500E+02]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/10/24 23:55:46 Page 3
+Homework 2 part 2 Steelco Company
+Model Statistics    SOLVE prob2 Using LP From line 59
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           5     SINGLE EQUATIONS           15
+BLOCKS OF VARIABLES           3     SINGLE VARIABLES            9  1 projected
+NON ZERO ELEMENTS            51
+
+
+GENERATION TIME      =        0.003 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/10/24 23:55:46 Page 4
+Homework 2 part 2 Steelco Company
+Solution Report     SOLVE prob2 Using LP From line 59
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   prob2               OBJECTIVE  obj
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  COPT                FROM LINE  59
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE            98121.6358
+
+ RESOURCE USAGE, LIMIT          0.020 10000000000.000
+ ITERATION COUNT, LIMIT         3    2147483647
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU objective           .              .              .             1.0000      
+---- EQU cons1               .       -7.10543E-15          .          -150.2412      
+
+  objective  objective
+  cons1  total weight
+
+---- EQU cons2  min grade
+
+          LOWER          LEVEL          UPPER         MARGINAL
+
+C           .              .            +INF             .          
+Cu          .             1.0000        +INF             .          
+Mn          .              .            +INF         4173.3660      
+
+---- EQU cons3  max grade
+
+          LOWER          LEVEL          UPPER         MARGINAL
+
+C         -INF           -5.0000          .              .          
+Cu        -INF             .              .           -80.3915      
+Mn        -INF           -2.2500          .              .          
+
+---- EQU cons4  max available
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1        -INF          400.0000       400.0000        -4.4949      
+2        -INF             .           300.0000          .          
+3        -INF           39.7763       600.0000          .          
+4        -INF             .           500.0000          .          
+5        -INF            2.7613       200.0000          .          
+6        -INF           57.4624       300.0000          .          
+7        -INF             .           250.0000          .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR obj               -INF        98121.6358        +INF             .          
+---- VAR totalWeig~       500.0000       500.0000        +INF          199.8392      
+
+  obj  objective
+
+---- VAR x  Raw materials in tons
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .           400.0000        +INF             .          
+2          .              .            +INF           66.3719      
+3          .            39.7763        +INF             .          
+4          .              .            +INF          142.1111      
+5          .             2.7613        +INF             .          
+6          .            57.4624        +INF             .          
+7          .              .            +INF           15.2412      
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/10/24 23:55:46 Page 5
+Homework 2 part 2 Steelco Company
+E x e c u t i o n
+
+
+----     64 PARAMETER objval               =    98121.636  
+
+----     64 PARAMETER pct  
+
+C  2.000,    Cu 0.600,    Mn 1.200
+
+
+
+EXECUTION TIME       =        0.047 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework2/gams/hw2-2.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework2/output/hw2-2.lst
