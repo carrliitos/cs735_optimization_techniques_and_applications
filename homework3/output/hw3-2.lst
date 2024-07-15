@@ -1,0 +1,272 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/15/24 18:52:33 Page 1
+Homework 3 part 2 Cornby Problem
+C o m p i l a t i o n
+
+
+   2  option limrow = 0, limcol = 0;
+   3   
+   4  * SET AND DEFINITIONS
+   5  set I /Jan, Feb, Mar, Apr/;
+   6  set J /corn, cash/;
+   7   
+   8  parameters
+   9  initial(J) "initial values" / "corn" 50, "cash" 1000/
+  10  b(I) "buy per month" / "Jan" 300, "Feb" 350, "Mar" 400, "Apr" 500/
+  11  s(I) "sell per month" / "Jan" 250, "Feb" 400, "Mar" 350, "Apr" 550/;
+  12   
+  13  scalar
+  14  capacity "in tons" /100/;
+  15   
+  16  * VARIABLE AND EQUATION DECLARATIONS
+  17  free variable
+  18  obj "objective";
+  19   
+  20  positive variables
+  21  y(I) "tons of corn bought",
+  22  z(I) "tons of corn sold",
+  23  start(I) "cash at start of month i",
+  24  cash(I) "cash after buying",
+  25  startInv(I) "stock at start of month i",
+  26  inv(I) "stock after buying";
+  27   
+  28   
+  29  equations
+  30  objective "objective",
+  31  cons1(I) "start cash per month",
+  32  cons2(I) "start inventory relationship",
+  33  cons3(I) "cash relationship",
+  34  cons4(I) "inventory after buying";
+  35   
+  36  * EQUATION (MODEL) DEFINITION
+  37   
+  38  * objective
+  39  objective..
+  40  obj =e= start('Apr') + s('Apr') * inv('Apr');
+  41   
+  42  * cons1(I) "start cash per month"
+  43  cons1(I)$(ord(I)>1)..
+  44  start(I) =e= cash(I-1) + s(I-1) * z(I-1);
+  45   
+  46  * cons2(I) "start inventory relationship"
+  47  cons2(I)$(ord(I)>1)..
+  48  startInv(I) =e= inv(I-1) - z(I-1);
+  49   
+  50  * cons3(I) "cash relationship"
+  51  cons3(I)..
+  52  cash(I) =e= start(I) - b(I) * y(I);
+  53   
+  54  * cons4(I) "inventory after buying"
+  55  cons4(I)..
+  56  inv(I) =e= startInv(I) + y(I);
+  57   
+  58  * VARIBLE BOUNDS
+  59  start.fx('Jan') = initial('cash');
+  60  startInv.fx('Jan') = initial('corn');
+  61  inv.up(I) = capacity;
+  62   
+  63  model prob2 /all/;
+  64   
+  65  solve prob2 using lp maximizing obj;
+  66   
+  67  parameter objval;
+  68  objval = obj.l;
+  69   
+  70  display objval, y.l, z.l, start.l, cash.l, startInv.l, inv.l;
+
+
+COMPILATION TIME     =        0.001 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/15/24 18:52:33 Page 2
+Homework 3 part 2 Cornby Problem
+Range Statistics    SOLVE prob2 Using LP From line 65
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [        NA,        NA] - Zero values observed as well
+Bound     [min, max] : [ 5.000E+01, 1.000E+03] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 5.500E+02]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/15/24 18:52:33 Page 3
+Homework 3 part 2 Cornby Problem
+Model Statistics    SOLVE prob2 Using LP From line 65
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           5     SINGLE EQUATIONS           15
+BLOCKS OF VARIABLES           7     SINGLE VARIABLES           24
+NON ZERO ELEMENTS            45
+
+
+GENERATION TIME      =        0.003 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/15/24 18:52:33 Page 4
+Homework 3 part 2 Cornby Problem
+Solution Report     SOLVE prob2 Using LP From line 65
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   prob2               OBJECTIVE  obj
+     TYPE    LP                  DIRECTION  MAXIMIZE
+     SOLVER  COPT                FROM LINE  65
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE            44800.0000
+
+ RESOURCE USAGE, LIMIT          0.029 10000000000.000
+ ITERATION COUNT, LIMIT        12    2147483647
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU objective           .              .              .             1.0000      
+
+  objective  objective
+
+---- EQU cons1  start cash per month
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+Feb          .              .              .             2.8000      
+Mar          .              .              .             2.1000      
+Apr          .              .              .             2.1000      
+
+---- EQU cons2  start inventory relationship
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+Feb          .              .              .           840.0000      
+Mar          .              .              .           840.0000      
+Apr          .              .              .           735.0000      
+
+---- EQU cons3  cash relationship
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+Jan          .              .              .             2.8000      
+Feb          .              .              .             2.8000      
+Mar          .              .              .             2.1000      
+Apr          .              .              .             1.1000      
+
+---- EQU cons4  inventory after buying
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+Jan          .              .              .           840.0000      
+Feb          .              .              .           840.0000      
+Mar          .              .              .           735.0000      
+Apr          .              .              .           550.0000      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR obj               -INF        44800.0000        +INF             .          
+
+  obj  objective
+
+---- VAR y  tons of corn bought
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+Jan          .             3.3333        +INF             .          
+Feb          .              .            +INF         -140.0000      
+Mar          .              .            +INF         -105.0000      
+Apr          .            42.6667        +INF             .          
+
+---- VAR z  tons of corn sold
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+Jan          .              .            +INF         -140.0000      
+Feb          .            53.3333        +INF             .          
+Mar          .              .            +INF             .          
+
+---- VAR start  cash at start of month i
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+Jan      1000.0000      1000.0000      1000.0000         2.8000      
+Feb          .              .            +INF             .          
+Mar          .         21333.3333        +INF             .          
+Apr          .         21333.3333        +INF             .          
+
+---- VAR cash  cash after buying
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+Jan          .              .            +INF             .          
+Feb          .              .            +INF           -0.7000      
+Mar          .         21333.3333        +INF             .          
+Apr          .              .            +INF           -1.1000      
+
+---- VAR startInv  stock at start of month i
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+Jan        50.0000        50.0000        50.0000       840.0000      
+Feb          .            53.3333        +INF             .          
+Mar          .              .            +INF         -105.0000      
+Apr          .              .            +INF         -185.0000      
+
+---- VAR inv  stock after buying
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+Jan          .            53.3333       100.0000          .          
+Feb          .            53.3333       100.0000          .          
+Mar          .              .           100.0000          .          
+Apr          .            42.6667       100.0000          .          
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/15/24 18:52:33 Page 5
+Homework 3 part 2 Cornby Problem
+E x e c u t i o n
+
+
+----     70 PARAMETER objval               =    44800.000  
+
+----     70 VARIABLE y.L  tons of corn bought
+
+Jan  3.333,    Apr 42.667
+
+
+----     70 VARIABLE z.L  tons of corn sold
+
+Feb 53.333
+
+
+----     70 VARIABLE start.L  cash at start of month i
+
+Jan  1000.000,    Mar 21333.333,    Apr 21333.333
+
+
+----     70 VARIABLE cash.L  cash after buying
+
+Mar 21333.333
+
+
+----     70 VARIABLE startInv.L  stock at start of month i
+
+Jan 50.000,    Feb 53.333
+
+
+----     70 VARIABLE inv.L  stock after buying
+
+Jan 53.333,    Feb 53.333,    Apr 42.667
+
+
+
+EXECUTION TIME       =        0.133 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework3/gams/hw3-2.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework3/output/hw3-2.lst

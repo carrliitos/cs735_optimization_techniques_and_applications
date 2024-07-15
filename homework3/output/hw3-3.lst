@@ -1,0 +1,361 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/15/24 18:56:12 Page 1
+HW 3-3 COMPSCI 735
+C o m p i l a t i o n
+
+
+   2   
+   3  set month /jul,aug,sep,oct,nov,dec/;
+   4   
+   5  parameter sales(month) /
+   6  jul     4
+   7  aug     8
+   8  sep     20
+   9  oct     12
+  10  nov     6
+  11  dec     4
+  12  /;
+  13   
+  14  set type /incr,decr/;
+  15   
+  16  parameter change(type) /
+  17  incr    0.5,
+  18  decr    0.25
+  19  /;
+  20   
+  21  change(type) = change(type) * 1000;
+  22   
+  23  scalar startInv /2/;
+  24  scalar startProd /4/;
+  25   
+  26  positive variable
+  27          invlev(month) "inventory level at end of month",
+  28          incprod(month),
+  29          decprod(month),
+  30          prodlev(month);
+  31  variable cost;
+  32   
+  33  equations
+  34          obj,
+  35          defInv(month),
+  36          defProd(month),
+  37          defInitProd;
+  38   
+  39  obj..
+  40  cost =e= sum(month, change("incr")*incprod(month) + change("decr")*decprod(month));
+  41   
+  42  defProd(month)..
+  43  prodlev(month) =e= prodlev(month-1) - decprod(month) + incprod(month)
+  44                   + startProd$(ord(month) eq 1);
+  45   
+  46  defInv(month)..
+  47  invlev(month) =e= invlev(month-1) + prodlev(month) - sales(month);
+  48   
+  49  defInitProd..
+  50  prodlev('jul') =e= startProd;
+  51   
+  52  * Initial inventory
+  53  invlev.fx('jul') = startInv;
+  54   
+  55  invlev.up(month) = 10;
+  56   
+  57  model steel /all/;
+  58  solve steel using lp minimizing cost;
+  59   
+  60  display cost.l, invlev.l, incprod.l, decprod.l, prodlev.l;
+
+
+COMPILATION TIME     =        0.001 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/15/24 18:56:12 Page 2
+HW 3-3 COMPSCI 735
+Equation Listing    SOLVE steel Using LP From line 58
+
+
+---- obj  =E=  
+
+obj..  - 500*incprod(jul) - 500*incprod(aug) - 500*incprod(sep) - 500*incprod(oct) - 500*incprod(nov) - 500*incprod(dec) - 250*decprod(jul) - 250*decprod(aug) - 250*decprod(sep) - 250*decprod(oct) - 250*decprod(nov) - 250*decprod(dec) + cost =E= 0 ; (LHS = 0)
+     
+
+---- defInv  =E=  
+
+defInv(jul)..  invlev(jul) - prodlev(jul) =E= -4 ; (LHS = 2, INFES = 6 ****)
+     
+defInv(aug)..  - invlev(jul) + invlev(aug) - prodlev(aug) =E= -8 ; (LHS = -2, INFES = 6 ****)
+     
+defInv(sep)..  - invlev(aug) + invlev(sep) - prodlev(sep) =E= -20 ; (LHS = 0, INFES = 20 ****)
+     
+REMAINING 3 ENTRIES SKIPPED
+
+
+---- defProd  =E=  
+
+defProd(jul)..  - incprod(jul) + decprod(jul) + prodlev(jul) =E= 4 ; (LHS = 0, INFES = 4 ****)
+     
+defProd(aug)..  - incprod(aug) + decprod(aug) - prodlev(jul) + prodlev(aug) =E= 0 ; (LHS = 0)
+     
+defProd(sep)..  - incprod(sep) + decprod(sep) - prodlev(aug) + prodlev(sep) =E= 0 ; (LHS = 0)
+     
+REMAINING 3 ENTRIES SKIPPED
+
+
+---- defInitProd  =E=  
+
+defInitProd..  prodlev(jul) =E= 4 ; (LHS = 0, INFES = 4 ****)
+     
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/15/24 18:56:12 Page 3
+HW 3-3 COMPSCI 735
+Column Listing      SOLVE steel Using LP From line 58
+
+
+---- invlev  inventory level at end of month
+
+invlev(jul)
+                (.LO, .L, .UP, .M = 2, 2, 10, 0)
+        1       defInv(jul)
+       -1       defInv(aug)
+
+invlev(aug)
+                (.LO, .L, .UP, .M = 0, 0, 10, 0)
+        1       defInv(aug)
+       -1       defInv(sep)
+
+invlev(sep)
+                (.LO, .L, .UP, .M = 0, 0, 10, 0)
+        1       defInv(sep)
+       -1       defInv(oct)
+
+REMAINING 3 ENTRIES SKIPPED
+
+---- incprod  
+
+incprod(jul)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     -500       obj
+       -1       defProd(jul)
+
+incprod(aug)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     -500       obj
+       -1       defProd(aug)
+
+incprod(sep)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     -500       obj
+       -1       defProd(sep)
+
+REMAINING 3 ENTRIES SKIPPED
+
+---- decprod  
+
+decprod(jul)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     -250       obj
+        1       defProd(jul)
+
+decprod(aug)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     -250       obj
+        1       defProd(aug)
+
+decprod(sep)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     -250       obj
+        1       defProd(sep)
+
+REMAINING 3 ENTRIES SKIPPED
+
+---- prodlev  
+
+prodlev(jul)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       defInv(jul)
+        1       defProd(jul)
+       -1       defProd(aug)
+        1       defInitProd
+
+prodlev(aug)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       defInv(aug)
+        1       defProd(aug)
+       -1       defProd(sep)
+
+prodlev(sep)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       defInv(sep)
+        1       defProd(sep)
+       -1       defProd(oct)
+
+REMAINING 3 ENTRIES SKIPPED
+
+---- cost  
+
+cost
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       obj
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/15/24 18:56:12 Page 4
+HW 3-3 COMPSCI 735
+Range Statistics    SOLVE steel Using LP From line 58
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 4.000E+00, 2.000E+01] - Zero values observed as well
+Bound     [min, max] : [ 2.000E+00, 1.000E+01] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 5.000E+02]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/15/24 18:56:12 Page 5
+HW 3-3 COMPSCI 735
+Model Statistics    SOLVE steel Using LP From line 58
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           4     SINGLE EQUATIONS           14
+BLOCKS OF VARIABLES           5     SINGLE VARIABLES           25
+NON ZERO ELEMENTS            54
+
+
+GENERATION TIME      =        0.007 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/15/24 18:56:12 Page 6
+HW 3-3 COMPSCI 735
+Solution Report     SOLVE steel Using LP From line 58
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   steel               OBJECTIVE  cost
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  COPT                FROM LINE  58
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      4 Infeasible
+**** OBJECTIVE VALUE                0.0000
+
+ RESOURCE USAGE, LIMIT          0.018 10000000000.000
+ ITERATION COUNT, LIMIT         9    2147483647
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU obj                 .              .              .             1.0000      
+
+---- EQU defInv  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+jul        -4.0000          .            -4.0000        -1.0000 INFES
+aug        -8.0000          .            -8.0000         EPS         
+sep       -20.0000          .           -20.0000         EPS         
+oct       -12.0000          .           -12.0000         EPS         
+nov        -6.0000          .            -6.0000         EPS         
+dec        -4.0000          .            -4.0000         EPS         
+
+---- EQU defProd  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+jul         4.0000          .             4.0000         EPS         
+aug          .              .              .             EPS         
+sep          .              .              .             EPS         
+oct          .              .              .             EPS         
+nov          .              .              .             EPS         
+dec          .              .              .             EPS         
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU defInitPr~         4.0000          .             4.0000        -1.0000 INFES
+
+---- VAR invlev  inventory level at end of month
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+jul         2.0000          .            10.0000         1.0000      
+aug          .              .            10.0000         EPS         
+sep          .              .            10.0000         EPS         
+oct          .              .            10.0000         EPS         
+nov          .              .            10.0000         EPS         
+dec          .              .            10.0000         EPS         
+
+---- VAR incprod  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+jul          .              .            +INF            EPS         
+aug          .              .            +INF            EPS         
+sep          .              .            +INF            EPS         
+oct          .              .            +INF            EPS         
+nov          .              .            +INF            EPS         
+dec          .              .            +INF            EPS         
+
+---- VAR decprod  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+jul          .              .            +INF            EPS         
+aug          .              .            +INF            EPS         
+sep          .              .            +INF            EPS         
+oct          .              .            +INF            EPS         
+nov          .              .            +INF            EPS         
+dec          .              .            +INF            EPS         
+
+---- VAR prodlev  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+jul          .              .            +INF            EPS         
+aug          .              .            +INF            EPS         
+sep          .              .            +INF            EPS         
+oct          .              .            +INF            EPS         
+nov          .              .            +INF            EPS         
+dec          .              .            +INF            EPS         
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR cost              -INF             .            +INF             .          
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             2 INFEASIBLE (INFES)
+                    SUM          8.0000
+                    MAX          4.0000
+                    MEAN         4.0000
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/15/24 18:56:12 Page 7
+HW 3-3 COMPSCI 735
+E x e c u t i o n
+
+
+----     60 VARIABLE cost.L                =        0.000  
+
+----     60 VARIABLE invlev.L  inventory level at end of month
+
+                      ( ALL       0.000 )
+
+
+----     60 VARIABLE incprod.L  
+
+                      ( ALL       0.000 )
+
+
+----     60 VARIABLE decprod.L  
+
+                      ( ALL       0.000 )
+
+
+----     60 VARIABLE prodlev.L  
+
+                      ( ALL       0.000 )
+
+
+
+EXECUTION TIME       =        0.062 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework3/gams/hw3-3.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework3/output/hw3-3.lst
