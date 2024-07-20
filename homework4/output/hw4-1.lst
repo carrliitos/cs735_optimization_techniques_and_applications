@@ -1,0 +1,729 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 1
+Branch and Bound Algorithm for IP Problem
+C o m p i l a t i o n
+
+
+   2   
+   3  option limrow = 0, limcol = 0;
+   4   
+   5  *VARIABLE AND EQUATION DECLARATIONS
+   6  free variable obj "objval";
+   7   
+   8  positive variables
+   9      x1,
+  10      x2;
+  11   
+  12  equations
+  13      objective "Minimize the objective",
+  14      cons1,
+  15      cons2;
+  16   
+  17  objective..
+  18      obj =e= x1 - 2*x2;
+  19   
+  20  cons1..
+  21      2*x1 + x2 =l= 5;
+  22   
+  23  cons2..
+  24      -4*x1 + 4*x2 =l= 5;
+  25   
+  26  model LP1 /objective, cons1, cons2/;
+  27   
+  28  * Initial LP relaxation
+  29  solve LP1 using lp minimizing obj;
+  30  display obj.l, x1.l, x2.l;
+  31   
+  32  * Branching on x1
+  33  equation branch1;
+  34  branch1..
+  35      x1 =l= floor(x1.l);
+  36   
+  37  model LP2 /objective, cons1, cons2, branch1/;
+  38  solve LP2 using lp minimizing obj;
+  39  display obj.l, x1.l, x2.l;
+  40   
+  41  equation branch2;
+  42  branch2..
+  43      x1 =g= ceil(x1.l);
+  44   
+  45  model LP3 /objective, cons1, cons2, branch2/;
+  46  solve LP3 using lp minimizing obj;
+  47  display obj.l, x1.l, x2.l;
+  48   
+  49  * Branching on x2 from LP2
+  50  equation branch3;
+  51  branch3..
+  52      x2 =l= floor(x2.l);
+  53   
+  54  model LP4 /objective, cons1, cons2, branch1, branch3/;
+  55  solve LP4 using lp minimizing obj;
+  56  display obj.l, x1.l, x2.l;
+  57   
+  58  equation branch4;
+  59  branch4..
+  60      x2 =g= ceil(x2.l);
+  61   
+  62  model LP5 /objective, cons1, cons2, branch1, branch4/;
+  63  solve LP5 using lp minimizing obj;
+  64  display obj.l, x1.l, x2.l;
+  65   
+  66  * Branching on x2 from LP3
+  67  equation branch5;
+  68  branch5..
+  69      x2 =l= floor(x2.l);
+  70   
+  71  model LP6 /objective, cons1, cons2, branch2, branch5/;
+  72  solve LP6 using lp minimizing obj;
+  73  display obj.l, x1.l, x2.l;
+  74   
+  75  equation branch6;
+  76  branch6..
+  77      x2 =g= ceil(x2.l);
+  78   
+  79  model LP7 /objective, cons1, cons2, branch2, branch6/;
+  80  solve LP7 using lp minimizing obj;
+  81  display obj.l, x1.l, x2.l;
+  82   
+  83  * Final MIP Model
+  84  integer variables
+  85      y1,
+  86      y2;
+  87   
+  88  free variable obj_int "objval";
+  89   
+  90  equations
+  91      objective_int "Minimize the objective",
+  92      IPcons1,
+  93      IPcons2;
+  94   
+  95  objective_int..
+  96      obj_int =e= y1 - 2*y2;
+  97   
+  98  IPcons1..
+  99      2*y1 + y2 =l= 5;
+ 100   
+ 101  IPcons2..
+ 102      -4*y1 + 4*y2 =l= 5;
+ 103   
+ 104  model IP /objective_int, IPcons1, IPcons2/;
+ 105   
+ 106  solve IP using mip minimizing obj_int;
+ 107   
+ 108  display obj_int.l, y1.l, y2.l;
+
+
+COMPILATION TIME     =        0.001 SECONDS      2 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 2
+Branch and Bound Algorithm for IP Problem
+Range Statistics    SOLVE LP1 Using LP From line 29
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 5.000E+00, 5.000E+00] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 4.000E+00]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 3
+Branch and Bound Algorithm for IP Problem
+Model Statistics    SOLVE LP1 Using LP From line 29
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           3     SINGLE EQUATIONS            3
+BLOCKS OF VARIABLES           3     SINGLE VARIABLES            3
+NON ZERO ELEMENTS             7
+
+
+GENERATION TIME      =        0.002 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 4
+Branch and Bound Algorithm for IP Problem
+Solution Report     SOLVE LP1 Using LP From line 29
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   LP1                 OBJECTIVE  obj
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  COPT                FROM LINE  29
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE               -3.7500
+
+ RESOURCE USAGE, LIMIT          0.020 10000000000.000
+ ITERATION COUNT, LIMIT         2    2147483647
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU objective           .              .              .             1.0000      
+---- EQU cons1             -INF            5.0000         5.0000        -0.3333      
+---- EQU cons2             -INF            5.0000         5.0000        -0.4167      
+
+  objective  Minimize the objective
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR obj               -INF           -3.7500        +INF             .          
+---- VAR x1                  .             1.2500        +INF             .          
+---- VAR x2                  .             2.5000        +INF             .          
+
+  obj  objval
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 5
+Branch and Bound Algorithm for IP Problem
+E x e c u t i o n
+
+
+----     30 VARIABLE obj.L                 =       -3.750  objval
+            VARIABLE x1.L                  =        1.250  
+            VARIABLE x2.L                  =        2.500  
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 6
+Branch and Bound Algorithm for IP Problem
+Range Statistics    SOLVE LP2 Using LP From line 38
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 1.000E+00, 5.000E+00] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 4.000E+00]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 7
+Branch and Bound Algorithm for IP Problem
+Model Statistics    SOLVE LP2 Using LP From line 38
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           4     SINGLE EQUATIONS            4
+BLOCKS OF VARIABLES           3     SINGLE VARIABLES            3
+NON ZERO ELEMENTS             8
+
+
+GENERATION TIME      =        0.001 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 8
+Branch and Bound Algorithm for IP Problem
+Solution Report     SOLVE LP2 Using LP From line 38
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   LP2                 OBJECTIVE  obj
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  COPT                FROM LINE  38
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE               -3.5000
+
+ RESOURCE USAGE, LIMIT          0.001 10000000000.000
+ ITERATION COUNT, LIMIT         1    2147483647
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU objective           .              .              .             1.0000      
+---- EQU cons1             -INF            4.2500         5.0000          .          
+---- EQU cons2             -INF            5.0000         5.0000        -0.5000      
+---- EQU branch1           -INF            1.0000         1.0000        -1.0000      
+
+  objective  Minimize the objective
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR obj               -INF           -3.5000        +INF             .          
+---- VAR x1                  .             1.0000        +INF             .          
+---- VAR x2                  .             2.2500        +INF             .          
+
+  obj  objval
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 9
+Branch and Bound Algorithm for IP Problem
+E x e c u t i o n
+
+
+----     39 VARIABLE obj.L                 =       -3.500  objval
+            VARIABLE x1.L                  =        1.000  
+            VARIABLE x2.L                  =        2.250  
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 10
+Branch and Bound Algorithm for IP Problem
+Range Statistics    SOLVE LP3 Using LP From line 46
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 1.000E+00, 5.000E+00] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 4.000E+00]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 11
+Branch and Bound Algorithm for IP Problem
+Model Statistics    SOLVE LP3 Using LP From line 46
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           4     SINGLE EQUATIONS            4
+BLOCKS OF VARIABLES           3     SINGLE VARIABLES            3
+NON ZERO ELEMENTS             8
+
+
+GENERATION TIME      =        0.001 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 12
+Branch and Bound Algorithm for IP Problem
+Solution Report     SOLVE LP3 Using LP From line 46
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   LP3                 OBJECTIVE  obj
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  COPT                FROM LINE  46
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE               -3.7500
+
+ RESOURCE USAGE, LIMIT          0.001 10000000000.000
+ ITERATION COUNT, LIMIT         2    2147483647
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU objective           .              .              .             1.0000      
+---- EQU cons1             -INF            5.0000         5.0000        -0.3333      
+---- EQU cons2             -INF            5.0000         5.0000        -0.4167      
+---- EQU branch2            1.0000         1.2500        +INF             .          
+
+  objective  Minimize the objective
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR obj               -INF           -3.7500        +INF             .          
+---- VAR x1                  .             1.2500        +INF             .          
+---- VAR x2                  .             2.5000        +INF             .          
+
+  obj  objval
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 13
+Branch and Bound Algorithm for IP Problem
+E x e c u t i o n
+
+
+----     47 VARIABLE obj.L                 =       -3.750  objval
+            VARIABLE x1.L                  =        1.250  
+            VARIABLE x2.L                  =        2.500  
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 14
+Branch and Bound Algorithm for IP Problem
+Range Statistics    SOLVE LP4 Using LP From line 55
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 1.000E+00, 5.000E+00] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 4.000E+00]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 15
+Branch and Bound Algorithm for IP Problem
+Model Statistics    SOLVE LP4 Using LP From line 55
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           5     SINGLE EQUATIONS            5
+BLOCKS OF VARIABLES           3     SINGLE VARIABLES            3
+NON ZERO ELEMENTS             9
+
+
+GENERATION TIME      =        0.001 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 16
+Branch and Bound Algorithm for IP Problem
+Solution Report     SOLVE LP4 Using LP From line 55
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   LP4                 OBJECTIVE  obj
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  COPT                FROM LINE  55
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE               -3.2500
+
+ RESOURCE USAGE, LIMIT          0.001 10000000000.000
+ ITERATION COUNT, LIMIT         1    2147483647
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU objective           .              .              .             1.0000      
+---- EQU cons1             -INF            3.5000         5.0000          .          
+---- EQU cons2             -INF            5.0000         5.0000        -0.2500      
+---- EQU branch1           -INF            0.7500         1.0000          .          
+---- EQU branch3           -INF            2.0000         2.0000        -1.0000      
+
+  objective  Minimize the objective
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR obj               -INF           -3.2500        +INF             .          
+---- VAR x1                  .             0.7500        +INF             .          
+---- VAR x2                  .             2.0000        +INF             .          
+
+  obj  objval
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 17
+Branch and Bound Algorithm for IP Problem
+E x e c u t i o n
+
+
+----     56 VARIABLE obj.L                 =       -3.250  objval
+            VARIABLE x1.L                  =        0.750  
+            VARIABLE x2.L                  =        2.000  
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 18
+Branch and Bound Algorithm for IP Problem
+Range Statistics    SOLVE LP5 Using LP From line 63
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 2.000E+00, 5.000E+00] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 4.000E+00]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 19
+Branch and Bound Algorithm for IP Problem
+Model Statistics    SOLVE LP5 Using LP From line 63
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           5     SINGLE EQUATIONS            5
+BLOCKS OF VARIABLES           3     SINGLE VARIABLES            3
+NON ZERO ELEMENTS             9
+
+
+GENERATION TIME      =        0.001 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 20
+Branch and Bound Algorithm for IP Problem
+Solution Report     SOLVE LP5 Using LP From line 63
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   LP5                 OBJECTIVE  obj
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  COPT                FROM LINE  63
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      4 Infeasible
+**** OBJECTIVE VALUE                0.0000
+
+ RESOURCE USAGE, LIMIT          0.021 10000000000.000
+ ITERATION COUNT, LIMIT         1    2147483647
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU objective           .              .              .             1.0000      
+---- EQU cons1             -INF             .             5.0000         EPS         
+---- EQU cons2             -INF             .             5.0000        -0.2500 INFES
+---- EQU branch1           -INF             .              .            -1.0000 INFES
+---- EQU branch4            2.0000          .            +INF            1.0000 INFES
+
+  objective  Minimize the objective
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR obj               -INF             .            +INF             .          
+---- VAR x1                  .              .            +INF            EPS         
+---- VAR x2                  .              .            +INF            EPS         
+
+  obj  objval
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             3 INFEASIBLE (INFES)
+                    SUM          2.0000
+                    MAX          2.0000
+                    MEAN         0.6667
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 21
+Branch and Bound Algorithm for IP Problem
+E x e c u t i o n
+
+
+----     64 VARIABLE obj.L                 =        0.000  objval
+            VARIABLE x1.L                  =        0.000  
+            VARIABLE x2.L                  =        0.000  
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 22
+Branch and Bound Algorithm for IP Problem
+Range Statistics    SOLVE LP6 Using LP From line 72
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 5.000E+00, 5.000E+00] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 4.000E+00]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 23
+Branch and Bound Algorithm for IP Problem
+Model Statistics    SOLVE LP6 Using LP From line 72
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           5     SINGLE EQUATIONS            5
+BLOCKS OF VARIABLES           3     SINGLE VARIABLES            3
+NON ZERO ELEMENTS             9
+
+
+GENERATION TIME      =        0.001 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 24
+Branch and Bound Algorithm for IP Problem
+Solution Report     SOLVE LP6 Using LP From line 72
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   LP6                 OBJECTIVE  obj
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  COPT                FROM LINE  72
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE                0.0000
+
+ RESOURCE USAGE, LIMIT          0.001 10000000000.000
+ ITERATION COUNT, LIMIT         0    2147483647
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU objective           .              .              .             1.0000      
+---- EQU cons1             -INF             .             5.0000          .          
+---- EQU cons2             -INF             .             5.0000          .          
+---- EQU branch2             .              .            +INF             .          
+---- EQU branch5           -INF             .              .            -2.0000      
+
+  objective  Minimize the objective
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR obj               -INF             .            +INF             .          
+---- VAR x1                  .              .            +INF            1.0000      
+---- VAR x2                  .              .            +INF             .          
+
+  obj  objval
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 25
+Branch and Bound Algorithm for IP Problem
+E x e c u t i o n
+
+
+----     73 VARIABLE obj.L                 =        0.000  objval
+            VARIABLE x1.L                  =        0.000  
+            VARIABLE x2.L                  =        0.000  
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 26
+Branch and Bound Algorithm for IP Problem
+Range Statistics    SOLVE LP7 Using LP From line 80
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 5.000E+00, 5.000E+00] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 4.000E+00]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 27
+Branch and Bound Algorithm for IP Problem
+Model Statistics    SOLVE LP7 Using LP From line 80
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           5     SINGLE EQUATIONS            5
+BLOCKS OF VARIABLES           3     SINGLE VARIABLES            3
+NON ZERO ELEMENTS             9
+
+
+GENERATION TIME      =        0.001 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 28
+Branch and Bound Algorithm for IP Problem
+Solution Report     SOLVE LP7 Using LP From line 80
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   LP7                 OBJECTIVE  obj
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  COPT                FROM LINE  80
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE               -3.7500
+
+ RESOURCE USAGE, LIMIT          0.001 10000000000.000
+ ITERATION COUNT, LIMIT         2    2147483647
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU objective           .              .              .             1.0000      
+---- EQU cons1             -INF            5.0000         5.0000        -0.3333      
+---- EQU cons2             -INF            5.0000         5.0000        -0.4167      
+---- EQU branch2             .             1.2500        +INF             .          
+---- EQU branch6             .             2.5000        +INF             .          
+
+  objective  Minimize the objective
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR obj               -INF           -3.7500        +INF             .          
+---- VAR x1                  .             1.2500        +INF             .          
+---- VAR x2                  .             2.5000        +INF             .          
+
+  obj  objval
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 29
+Branch and Bound Algorithm for IP Problem
+E x e c u t i o n
+
+
+----     81 VARIABLE obj.L                 =       -3.750  objval
+            VARIABLE x1.L                  =        1.250  
+            VARIABLE x2.L                  =        2.500  
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 30
+Branch and Bound Algorithm for IP Problem
+Range Statistics    SOLVE IP Using MIP From line 106
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 5.000E+00, 5.000E+00] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 4.000E+00]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 31
+Branch and Bound Algorithm for IP Problem
+Model Statistics    SOLVE IP Using MIP From line 106
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           3     SINGLE EQUATIONS            3
+BLOCKS OF VARIABLES           3     SINGLE VARIABLES            3
+NON ZERO ELEMENTS             7     DISCRETE VARIABLES          2
+
+
+GENERATION TIME      =        0.001 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 32
+Branch and Bound Algorithm for IP Problem
+Solution Report     SOLVE IP Using MIP From line 106
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   IP                  OBJECTIVE  obj_int
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  106
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE               -3.0000
+
+ RESOURCE USAGE, LIMIT          0.003 10000000000.000
+ ITERATION COUNT, LIMIT         0    2147483647
+--- GAMS/CPLEX licensed for continuous and discrete problems.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.00sec (det. 0.01 ticks)
+
+--- Returning a primal only solution to GAMS (marginals all set to NA).
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.00 ticks)
+
+
+Proven optimal solution
+MIP Solution:           -3.000000    (0 iterations, 0 nodes)
+Final Solve:            -3.000000    (0 iterations)
+
+Best possible:          -3.000000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU objective~          .              .              .             1.0000      
+---- EQU IPcons1           -INF            4.0000         5.0000          .          
+---- EQU IPcons2           -INF            4.0000         5.0000          .          
+
+  objective_int  Minimize the objective
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR y1                  .             1.0000        +INF            1.0000      
+---- VAR y2                  .             2.0000        +INF           -2.0000      
+---- VAR obj_int           -INF           -3.0000        +INF             .          
+
+  obj_int  objval
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/19/24 19:11:45 Page 33
+Branch and Bound Algorithm for IP Problem
+E x e c u t i o n
+
+
+----    108 VARIABLE obj_int.L             =       -3.000  objval
+            VARIABLE y1.L                  =        1.000  
+            VARIABLE y2.L                  =        2.000  
+
+
+EXECUTION TIME       =        0.228 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework4/gams/hw4-1.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework4/output/hw4-1.lst
