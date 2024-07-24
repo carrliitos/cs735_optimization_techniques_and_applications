@@ -1,0 +1,144 @@
+--- Job hw5-3.gms Start 07/23/24 17:49:53 47.2.0 54a8429d LEX-LEG x86 64bit/Linux
+--- Applying:
+    /opt/gams/gams47.2_linux_x64_64_sfx/gmsprmun.txt
+--- GAMS Parameters defined
+    Input /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework5/gams/hw5-3.gms
+    Output /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework5/output/hw5-3.lst
+    ScrDir /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework5/225a/
+    SysDir /opt/gams/gams47.2_linux_x64_64_sfx/
+Licensee: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+          COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+          /opt/gams/gams47.2_linux_x64_64_sfx/gamslice.txt
+          License Admin: Athula Gunawardena, gunawara@uww.edu              
+          Course license for use within the course and related course work
+          The evaluation period of the license will expire on Aug 15, 2024
+Processor information: 1 socket(s), 2 core(s), and 4 thread(s) available
+GAMS 47.2.0   Copyright (C) 1987-2024 GAMS Development. All rights reserved
+--- Starting compilation
+--- hw5-3.gms(53) 3 Mb
+--- Starting execution: elapsed 0:00:00.020
+--- hw5-3.gms(4) 4 Mb
+--- Generating MIP model hw5_3
+--- hw5-3.gms(51) 4 Mb
+---   17 rows  13 columns  45 non-zeroes
+---   6 discrete-columns
+--- Range statistics (absolute non-zero finite values)
+--- RHS       [min, max] : [ 8.000E+01, 8.000E+01] - Zero values observed as well
+--- Bound     [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
+--- Matrix    [min, max] : [ 9.000E-02, 4.600E+01]
+--- Executing CPLEX (Solvelink=2): elapsed 0:00:00.024
+
+IBM ILOG CPLEX   47.2.0 54a8429d Jul 1, 2024           LEG x86 64bit/Linux    
+
+--- GAMS/CPLEX licensed for continuous and discrete problems.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+Version identifier: 22.1.1.0 | 2022-11-28 | 9160aff4d
+CPXPARAM_Advance                                 0
+CPXPARAM_Simplex_Display                         2
+CPXPARAM_MIP_Display                             4
+CPXPARAM_MIP_Pool_Capacity                       0
+CPXPARAM_MIP_Tolerances_AbsMIPGap                0
+Generic callback                                 0x50
+Found incumbent of value 0.000000 after 0.04 sec. (0.00 ticks)
+Tried aggregator 1 time.
+MIP Presolve eliminated 1 rows and 1 columns.
+MIP Presolve modified 1 coefficients.
+Reduced MIP has 15 rows, 12 columns, and 36 nonzeros.
+Reduced MIP has 6 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.04 sec. (0.02 ticks)
+Probing time = 0.00 sec. (0.00 ticks)
+Tried aggregator 1 time.
+Detecting symmetries...
+Reduced MIP has 15 rows, 12 columns, and 36 nonzeros.
+Reduced MIP has 6 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.00 sec. (0.02 ticks)
+Probing time = 0.00 sec. (0.00 ticks)
+Clique table members: 1.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Parallel mode: deterministic, using up to 1 threads for parallel tasks at root LP.
+Tried aggregator 1 time.
+LP Presolve eliminated 6 rows and 0 columns.
+Aggregator did 6 substitutions.
+Reduced LP has 3 rows, 6 columns, and 12 nonzeros.
+Presolve time = 0.00 sec. (0.01 ticks)
+
+Iteration      Dual Objective            In Variable           Out Variable
+     1              15.850000                 inv(3)           budget slack
+     2              13.600000                 inv(5)        opt5Limit slack
+     3              13.510000                 inv(4)                 inv(3)
+Initializing dual steep norms . . .
+
+Iteration      Dual Objective            In Variable           Out Variable
+     1              13.510000     maxInvest(5) slack              select(5)
+Root relaxation solution time = 0.05 sec. (0.02 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+*     0+    0                            0.0000       24.1000              --- 
+Found incumbent of value 0.000000 after 0.14 sec. (0.09 ticks)
+*     0+    0                           13.3200       24.1000            80.93%
+Found incumbent of value 13.320000 after 0.14 sec. (0.09 ticks)
+      0     0       13.5100     1       13.3200       13.5100        3    1.43%
+*     0     0      integral     0       13.5000   Flowcuts: 2        6    0.00%
+Found incumbent of value 13.500000 after 0.15 sec. (0.16 ticks)
+      0     0        cutoff             13.5000       13.5000        6    0.00%
+Elapsed time = 0.15 sec. (0.16 ticks, tree = 0.01 MB)
+
+Flow cuts applied:  2
+
+Root node processing (before b&c):
+  Real time             =    0.15 sec. (0.16 ticks)
+Parallel b&c, 4 threads:
+  Real time             =    0.00 sec. (0.00 ticks)
+  Sync time (average)   =    0.00 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =    0.15 sec. (0.16 ticks)
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.17sec (det. 0.16 ticks)
+
+--- Returning a primal only solution to GAMS (marginals all set to NA).
+--- Fixing integer variables and solving final LP...
+
+Version identifier: 22.1.1.0 | 2022-11-28 | 9160aff4d
+CPXPARAM_Advance                                 2
+CPXPARAM_Simplex_Display                         2
+CPXPARAM_MIP_Display                             4
+CPXPARAM_MIP_Pool_Capacity                       0
+CPXPARAM_MIP_Tolerances_AbsMIPGap                0
+Tried aggregator 1 time.
+LP Presolve eliminated 14 rows and 9 columns.
+Reduced LP has 2 rows, 4 columns, and 7 nonzeros.
+Presolve time = 0.00 sec. (0.01 ticks)
+
+Iteration      Dual Objective            In Variable           Out Variable
+     1              15.350000                 inv(3)           budget slack
+     2              13.500000                 inv(6)        opt5Limit slack
+     3              13.500000                 inv(5)                 inv(3)
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.02 ticks)
+
+
+Proven optimal solution
+MIP Solution:           13.500000    (6 iterations, 0 nodes)
+Final Solve:            13.500000    (3 iterations)
+
+Best possible:          13.500000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+--- Reading solution for model hw5_3
+--- Executing after solve: elapsed 0:00:00.746
+--- hw5-3.gms(53) 4 Mb
+*** Status: Normal completion
+--- Job hw5-3.gms Stop 07/23/24 17:49:54 elapsed 0:00:00.746

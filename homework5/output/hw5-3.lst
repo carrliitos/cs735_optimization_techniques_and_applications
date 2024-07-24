@@ -1,0 +1,228 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:49:53 Page 1
+HW5-1   CS 635   Athula Gunawardena  MIP exercises
+C o m p i l a t i o n
+
+
+   2   
+   4  option limrow=0, limcol=0;
+   5   
+   6  scalar M /80/;
+   7  sets
+   8       opt     /1*6/ ,
+   9       limits /min,max, exp/;
+  10   
+  11  table data(opt, limits)
+  12         min      max    exp
+  13  1      03       27     .13
+  14  2      02       12     .09
+  15  3      09       35     .17
+  16  4      05       15     .10
+  17  5      12       46     .22
+  18  6      04       18     .12
+  19  ;
+  20   
+  21  binary variable select(opt);
+  22  positive variables inv(opt);
+  23  variable return;
+  24   
+  25  equations
+  26      obj         'Objective function'
+  27      budget      'Total budget constraint'
+  28      minInvest   'Minimum investment constraint'
+  29      maxInvest   'Maximum investment constraint'
+  30      opt5Limit   'Option 5 investment constraint'
+  31      opt3Min6_1  'Option 3 constraint ensuring minimum investment'
+  32      opt3Min6_2  'Option 3 constraint ensuring minimum investment in Option 6';
+  33   
+  34  obj..          return =e= sum(opt, data(opt,'exp')*inv(opt));
+  35   
+  36  budget..       sum(opt, inv(opt)) =l= M;
+  37   
+  38  minInvest(opt).. inv(opt) =g= data(opt,'min')*select(opt);
+  39   
+  40  maxInvest(opt).. inv(opt) =l= data(opt,'max')*select(opt);
+  41   
+  42  opt5Limit..    inv('5') =l= inv('2') + inv('4') + inv('6');
+  43   
+  44  * Ensure that if Option 3 is selected, investment in Option 6 is at least the minimum investment
+  45  opt3Min6_1..   inv('6') =g= data('6','min')*select('3');
+  46   
+  47  * Ensure that investment in Option 3 is within its limits
+  48  opt3Min6_2..   inv('3') =g= data('3','min')*select('3');
+  49   
+  50  model hw5_3 /all/;
+  51  solve hw5_3 using mip maximizing return;
+  52   
+  53  display return.l, select.l, inv.l;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:49:53 Page 2
+HW5-1   CS 635   Athula Gunawardena  MIP exercises
+Range Statistics    SOLVE hw5_3 Using MIP From line 51
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 8.000E+01, 8.000E+01] - Zero values observed as well
+Bound     [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
+Matrix    [min, max] : [ 9.000E-02, 4.600E+01]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:49:53 Page 3
+HW5-1   CS 635   Athula Gunawardena  MIP exercises
+Model Statistics    SOLVE hw5_3 Using MIP From line 51
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           7     SINGLE EQUATIONS           17
+BLOCKS OF VARIABLES           3     SINGLE VARIABLES           13
+NON ZERO ELEMENTS            45     DISCRETE VARIABLES          6
+
+
+GENERATION TIME      =        0.003 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:49:53 Page 4
+HW5-1   CS 635   Athula Gunawardena  MIP exercises
+Solution Report     SOLVE hw5_3 Using MIP From line 51
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   hw5_3               OBJECTIVE  return
+     TYPE    MIP                 DIRECTION  MAXIMIZE
+     SOLVER  CPLEX               FROM LINE  51
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE               13.5000
+
+ RESOURCE USAGE, LIMIT          0.173 10000000000.000
+ ITERATION COUNT, LIMIT         6    2147483647
+--- GAMS/CPLEX licensed for continuous and discrete problems.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.17sec (det. 0.16 ticks)
+
+--- Returning a primal only solution to GAMS (marginals all set to NA).
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.02 ticks)
+
+
+Proven optimal solution
+MIP Solution:           13.500000    (6 iterations, 0 nodes)
+Final Solve:            13.500000    (3 iterations)
+
+Best possible:          13.500000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU obj                 .              .              .             1.0000      
+---- EQU budget            -INF           80.0000        80.0000         0.1700      
+
+  obj  Objective function
+  budget  Total budget constraint
+
+---- EQU minInvest  Minimum investment constraint
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .              .            +INF             .          
+2          .              .            +INF             .          
+3          .            26.0000        +INF             .          
+4          .              .            +INF           -0.0200      
+5          .            10.5000        +INF             .          
+6          .            13.5000        +INF             .          
+
+---- EQU maxInvest  Maximum investment constraint
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1        -INF             .              .              .          
+2        -INF             .              .              .          
+3        -INF             .              .       2.775558E-17      
+4        -INF          -10.0000          .              .          
+5        -INF          -23.5000          .              .          
+6        -INF           -0.5000          .              .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU opt5Limit         -INF             .              .             0.0500      
+---- EQU opt3Min6_1          .            13.5000        +INF             .          
+---- EQU opt3Min6_2          .            26.0000        +INF             .          
+
+  opt5Limit  Option 5 investment constraint
+  opt3Min6_1  Option 3 constraint ensuring minimum investment
+  opt3Min6_2  Option 3 constraint ensuring minimum investment in Option 6
+
+---- VAR select  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .              .             1.0000         EPS         
+2          .              .             1.0000         EPS         
+3          .             1.0000         1.0000   9.714451E-16      
+4          .             1.0000         1.0000        -0.1000      
+5          .             1.0000         1.0000         EPS         
+6          .             1.0000         1.0000         EPS         
+
+---- VAR inv  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .              .            +INF           -0.0400      
+2          .              .            +INF           -0.0300      
+3          .            35.0000        +INF             .          
+4          .             5.0000        +INF             .          
+5          .            22.5000        +INF             .          
+6          .            17.5000        +INF             .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR return            -INF           13.5000        +INF             .          
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:49:53 Page 5
+HW5-1   CS 635   Athula Gunawardena  MIP exercises
+E x e c u t i o n
+
+
+----     53 VARIABLE return.L              =       13.500  
+
+----     53 VARIABLE select.L  
+
+3 1.000,    4 1.000,    5 1.000,    6 1.000
+
+
+----     53 VARIABLE inv.L  
+
+3 35.000,    4  5.000,    5 22.500,    6 17.500
+
+
+
+EXECUTION TIME       =        0.726 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework5/gams/hw5-3.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework5/output/hw5-3.lst

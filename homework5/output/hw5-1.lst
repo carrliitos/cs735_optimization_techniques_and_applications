@@ -1,0 +1,444 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:30:27 Page 1
+Primal and Dual LP Problem
+C o m p i l a t i o n
+
+
+   2   
+   3  Sets
+   4      i /1*3/
+   5      j /1*3/;
+   6   
+   7  Parameters
+   8      c(i) "Objective function coefficients for primal"
+   9         /1 3, 2 2, 3 -33/
+  10      a(j,i) "Constraint coefficients matrix for primal"
+  11         /1.1 1, 1.2 -4, 1.3 1
+  12          2.1 9, 2.2 0, 2.3 6
+  13          3.1 5, 3.2 9, 3.3 0/
+  14      b(j) "Right hand side for primal"
+  15         /1 15, 2 12, 3 3/;
+  16   
+  17  * Define the primal variables
+  18  Variables
+  19      x(i) "Primal variables"
+  20      z "Objective function value for primal";
+  21   
+  22  * Define the primal equations
+  23  Equations
+  24      obj "Primal objective function"
+  25      con(j) "Primal constraints";
+  26   
+  27  * Primal objective function
+  28  obj..
+  29      z =e= sum(i, c(i)*x(i));
+  30   
+  31  * Primal constraints
+  32  con(j)..
+  33      sum(i, a(j,i)*x(i)) =l= b(j);
+  34   
+  35  * Non-negativity constraints
+  36  x.lo(i) = 0;
+  37   
+  38  * Solve the primal problem
+  39  Model primal /all/;
+  40  Solve primal using lp minimizing z;
+  41   
+  42  Display x.l, z.l;
+  43   
+  44  * Dual problem data
+  45  Parameters
+  46      d(j) "Objective function coefficients for dual"
+  47         /1 15, 2 12, 3 3/
+  48      a_dual(j,i) "Constraint coefficients matrix for dual"
+  49         /1.1 1, 1.2 9, 1.3 5
+  50          2.1 -4, 2.2 0, 2.3 9
+  51          3.1 1, 3.2 6, 3.3 0/
+  52      b_dual(i) "Right hand side for dual"
+  53         /1 3, 2 2, 3 -33/;
+  54   
+  55  * Define the dual variables
+  56  Variables
+  57      y(j) "Dual variables"
+  58      w "Objective function value for dual";
+  59   
+  60  * Define the dual equations
+  61  Equations
+  62      obj_dual "Dual objective function"
+  63      con_dual(i) "Dual constraints";
+  64   
+  65  * Dual objective function
+  66  obj_dual..
+  67      w =e= sum(j, d(j)*y(j));
+  68   
+  69  * Dual constraints
+  70  con_dual(i)..
+  71      sum(j, a_dual(j,i)*y(j)) =g= b_dual(i);
+  72   
+  73  * Non-negativity constraints
+  74  y.lo(j) = 0;
+  75   
+  76  * Solve the dual problem
+  77  Model dual /all/;
+  78  Solve dual using lp maximizing w;
+  79   
+  80  Display y.l, w.l;
+
+
+COMPILATION TIME     =        0.002 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:30:27 Page 2
+Primal and Dual LP Problem
+Equation Listing    SOLVE primal Using LP From line 40
+
+
+---- obj  =E=  Primal objective function
+
+obj..  - 3*x(1) - 2*x(2) + 33*x(3) + z =E= 0 ; (LHS = 0)
+     
+
+---- con  =L=  Primal constraints
+
+con(1)..  x(1) - 4*x(2) + x(3) =L= 15 ; (LHS = 0)
+     
+con(2)..  9*x(1) + 6*x(3) =L= 12 ; (LHS = 0)
+     
+con(3)..  5*x(1) + 9*x(2) =L= 3 ; (LHS = 0)
+     
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:30:27 Page 3
+Primal and Dual LP Problem
+Column Listing      SOLVE primal Using LP From line 40
+
+
+---- x  Primal variables
+
+x(1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -3       obj
+        1       con(1)
+        9       con(2)
+        5       con(3)
+
+x(2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -2       obj
+       -4       con(1)
+        9       con(3)
+
+x(3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       33       obj
+        1       con(1)
+        6       con(2)
+
+
+---- z  Objective function value for primal
+
+z
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       obj
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:30:27 Page 4
+Primal and Dual LP Problem
+Range Statistics    SOLVE primal Using LP From line 40
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 3.000E+00, 1.500E+01] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 3.300E+01]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:30:27 Page 5
+Primal and Dual LP Problem
+Model Statistics    SOLVE primal Using LP From line 40
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           2     SINGLE EQUATIONS            4
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES            4
+NON ZERO ELEMENTS            11
+
+
+GENERATION TIME      =        0.086 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:30:27 Page 6
+Primal and Dual LP Problem
+Solution Report     SOLVE primal Using LP From line 40
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   primal              OBJECTIVE  z
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  COPT                FROM LINE  40
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE              -66.0000
+
+ RESOURCE USAGE, LIMIT          0.022 10000000000.000
+ ITERATION COUNT, LIMIT         0    2147483647
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU obj                 .              .              .             1.0000      
+
+  obj  Primal objective function
+
+---- EQU con  Primal constraints
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1        -INF            2.0000        15.0000          .          
+2        -INF           12.0000        12.0000        -5.5000      
+3        -INF             .             3.0000          .          
+
+---- VAR x  Primal variables
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .              .            +INF           52.5000      
+2          .              .            +INF            2.0000      
+3          .             2.0000        +INF             .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR z                 -INF          -66.0000        +INF             .          
+
+  z  Objective function value for primal
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:30:27 Page 7
+Primal and Dual LP Problem
+E x e c u t i o n
+
+
+----     42 VARIABLE x.L  Primal variables
+
+3 2.000
+
+
+----     42 VARIABLE z.L                   =      -66.000  Objective function value for primal
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:30:27 Page 8
+Primal and Dual LP Problem
+Equation Listing    SOLVE dual Using LP From line 78
+
+
+---- obj  =E=  Primal objective function
+
+obj..  - 3*x(1) - 2*x(2) + 33*x(3) + z =E= 0 ; (LHS = 0)
+     
+
+---- con  =L=  Primal constraints
+
+con(1)..  x(1) - 4*x(2) + x(3) =L= 15 ; (LHS = 2)
+     
+con(2)..  9*x(1) + 6*x(3) =L= 12 ; (LHS = 12)
+     
+con(3)..  5*x(1) + 9*x(2) =L= 3 ; (LHS = 0)
+     
+
+---- obj_dual  =E=  Dual objective function
+
+obj_dual..  - 15*y(1) - 12*y(2) - 3*y(3) + w =E= 0 ; (LHS = 0)
+     
+
+---- con_dual  =G=  Dual constraints
+
+con_dual(1)..  y(1) - 4*y(2) + y(3) =G= 3 ; (LHS = 0, INFES = 3 ****)
+     
+con_dual(2)..  9*y(1) + 6*y(3) =G= 2 ; (LHS = 0, INFES = 2 ****)
+     
+con_dual(3)..  5*y(1) + 9*y(2) =G= -33 ; (LHS = 0)
+     
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:30:27 Page 9
+Primal and Dual LP Problem
+Column Listing      SOLVE dual Using LP From line 78
+
+
+---- x  Primal variables
+
+x(1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 52.5)
+       -3       obj
+        1       con(1)
+        9       con(2)
+        5       con(3)
+
+x(2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 2)
+       -2       obj
+       -4       con(1)
+        9       con(3)
+
+x(3)
+                (.LO, .L, .UP, .M = 0, 2, +INF, 0)
+       33       obj
+        1       con(1)
+        6       con(2)
+
+
+---- z  Objective function value for primal
+
+z
+                (.LO, .L, .UP, .M = -INF, -66, +INF, 0)
+        1       obj
+
+
+---- y  Dual variables
+
+y(1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+      -15       obj_dual
+        1       con_dual(1)
+        9       con_dual(2)
+        5       con_dual(3)
+
+y(2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+      -12       obj_dual
+       -4       con_dual(1)
+        9       con_dual(3)
+
+y(3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -3       obj_dual
+        1       con_dual(1)
+        6       con_dual(2)
+
+
+---- w  Objective function value for dual
+
+w
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       obj_dual
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:30:27 Page 10
+Primal and Dual LP Problem
+Range Statistics    SOLVE dual Using LP From line 78
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 2.000E+00, 3.300E+01] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 3.300E+01]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:30:27 Page 11
+Primal and Dual LP Problem
+Model Statistics    SOLVE dual Using LP From line 78
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           4     SINGLE EQUATIONS            8
+BLOCKS OF VARIABLES           4     SINGLE VARIABLES            8
+NON ZERO ELEMENTS            22
+
+
+GENERATION TIME      =        0.004 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:30:27 Page 12
+Primal and Dual LP Problem
+Solution Report     SOLVE dual Using LP From line 78
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   dual                OBJECTIVE  w
+     TYPE    LP                  DIRECTION  MAXIMIZE
+     SOLVER  COPT                FROM LINE  78
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      3 Unbounded
+**** OBJECTIVE VALUE                2.0000
+
+ RESOURCE USAGE, LIMIT          0.003 10000000000.000
+ ITERATION COUNT, LIMIT         2    2147483647
+
+                           LOWER          LEVEL          UPPER
+
+---- EQU obj                 .              .              .          
+
+  obj  Primal objective function
+
+---- EQU con  Primal constraints
+
+         LOWER          LEVEL          UPPER
+
+1        -INF             .            15.0000      
+2        -INF             .            12.0000      
+3        -INF             .             3.0000      
+
+                           LOWER          LEVEL          UPPER
+
+---- EQU obj_dual            .              .              .          
+
+  obj_dual  Dual objective function
+
+---- EQU con_dual  Dual constraints
+
+         LOWER          LEVEL          UPPER
+
+1         3.0000          .            +INF         
+2         2.0000         1.0000        +INF         
+3       -33.0000         0.8056        +INF         
+
+---- VAR x  Primal variables
+
+         LOWER          LEVEL          UPPER
+
+1          .              .            +INF         
+2          .              .            +INF         
+3          .              .            +INF         
+
+                           LOWER          LEVEL          UPPER
+
+---- VAR z                 -INF             .            +INF         
+
+  z  Objective function value for primal
+
+---- VAR y  Dual variables
+
+         LOWER          LEVEL          UPPER
+
+1          .             0.1111        +INF    UNBND
+2          .             0.0278        +INF    UNBND
+3          .              .            +INF         
+
+                           LOWER          LEVEL          UPPER
+
+---- VAR w                 -INF            2.0000        +INF         
+
+  w  Objective function value for dual
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             2  UNBOUNDED (UNBND)
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:30:27 Page 13
+Primal and Dual LP Problem
+E x e c u t i o n
+
+
+----     80 VARIABLE y.L  Dual variables
+
+1 0.111,    2 0.028
+
+
+----     80 VARIABLE w.L                   =        2.000  Objective function value for dual
+
+
+EXECUTION TIME       =        0.801 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework5/gams/hw5-1.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework5/output/hw5-1.lst

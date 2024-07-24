@@ -1,0 +1,202 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:37:06 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  Sets
+   2      i /wine, beer, champagne, whiskey/
+   3      j /molding, packaging, glass/;
+   4   
+   5  Parameters
+   6      mold(i)     / wine 4, beer 9, champagne 7, whiskey 10 /
+   7      package(i)  / wine 1, beer 1, champagne 3, whiskey 40 /
+   8      glass(i)    / wine 3, beer 4, champagne 2, whiskey 1 /
+   9      price(i)    / wine 6, beer 10, champagne 9, whiskey 20 /;
+  10   
+  11  Scalar
+  12      maxMold     /600/
+  13      maxPackage  /400/
+  14      maxGlass    /500/;
+  15   
+  16  Variables
+  17      x(i)        'Number of each type of glass produced'
+  18      revenue     'Total revenue';
+  19   
+  20  Positive Variables x;
+  21   
+  22  Equations
+  23      obj         'Objective function'
+  24      moldTime    'Molding time constraint'
+  25      packageTime 'Packaging time constraint'
+  26      glassUsed   'Glass used constraint';
+  27   
+  28  obj..          revenue =e= sum(i, price(i) * x(i));
+  29  moldTime..     sum(i, mold(i) * x(i)) =l= maxMold;
+  30  packageTime..  sum(i, package(i) * x(i)) =l= maxPackage;
+  31  glassUsed..    sum(i, glass(i) * x(i)) =l= maxGlass;
+  32   
+  33  Model maximizeRevenue /all/;
+  34  Solve maximizeRevenue using lp maximizing revenue;
+  35   
+  36  Display x.l, revenue.l;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:37:06 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE maximizeRevenue Using LP From line 34
+
+
+---- obj  =E=  Objective function
+
+obj..  - 6*x(wine) - 10*x(beer) - 9*x(champagne) - 20*x(whiskey) + revenue =E= 0 ; (LHS = 0)
+     
+
+---- moldTime  =L=  Molding time constraint
+
+moldTime..  4*x(wine) + 9*x(beer) + 7*x(champagne) + 10*x(whiskey) =L= 600 ; (LHS = 0)
+     
+
+---- packageTime  =L=  Packaging time constraint
+
+packageTime..  x(wine) + x(beer) + 3*x(champagne) + 40*x(whiskey) =L= 400 ; (LHS = 0)
+     
+
+---- glassUsed  =L=  Glass used constraint
+
+glassUsed..  3*x(wine) + 4*x(beer) + 2*x(champagne) + x(whiskey) =L= 500 ; (LHS = 0)
+     
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:37:06 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE maximizeRevenue Using LP From line 34
+
+
+---- x  Number of each type of glass produced
+
+x(wine)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -6       obj
+        4       moldTime
+        1       packageTime
+        3       glassUsed
+
+x(beer)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+      -10       obj
+        9       moldTime
+        1       packageTime
+        4       glassUsed
+
+x(champagne)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -9       obj
+        7       moldTime
+        3       packageTime
+        2       glassUsed
+
+REMAINING ENTRY SKIPPED
+
+---- revenue  Total revenue
+
+revenue
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       obj
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:37:06 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE maximizeRevenue Using LP From line 34
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 4.000E+02, 6.000E+02] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 4.000E+01]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:37:06 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE maximizeRevenue Using LP From line 34
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           4     SINGLE EQUATIONS            4
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES            5
+NON ZERO ELEMENTS            17
+
+
+GENERATION TIME      =        0.003 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:37:06 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE maximizeRevenue Using LP From line 34
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   maximizeRevenue     OBJECTIVE  revenue
+     TYPE    LP                  DIRECTION  MAXIMIZE
+     SOLVER  COPT                FROM LINE  34
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE              933.3333
+
+ RESOURCE USAGE, LIMIT          0.001 10000000000.000
+ ITERATION COUNT, LIMIT         3    2147483647
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU obj                 .              .              .             1.0000      
+---- EQU moldTime          -INF          600.0000       600.0000         1.4667      
+---- EQU packageTi~        -INF          400.0000       400.0000         0.1333      
+---- EQU glassUsed         -INF          406.6667       500.0000          .          
+
+  obj  Objective function
+  moldTime  Molding time constraint
+  packageTime  Packaging time constraint
+  glassUsed  Glass used constraint
+
+---- VAR x  Number of each type of glass produced
+
+                 LOWER          LEVEL          UPPER         MARGINAL
+
+wine               .           133.3333        +INF             .          
+beer               .              .            +INF           -3.3333      
+champagne          .              .            +INF           -1.6667      
+whiskey            .             6.6667        +INF             .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR revenue           -INF          933.3333        +INF             .          
+
+  revenue  Total revenue
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/23/24 17:37:06 Page 7
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     36 VARIABLE x.L  Number of each type of glass produced
+
+wine    133.333,    whiskey   6.667
+
+
+----     36 VARIABLE revenue.L             =      933.333  Total revenue
+
+
+EXECUTION TIME       =        0.026 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework5/gams/hw5-2-1.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework5/output/hw5-2-1.lst
