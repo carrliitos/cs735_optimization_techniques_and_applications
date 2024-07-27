@@ -1,0 +1,232 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/27/24 07:37:15 Page 1
+Min-Cost Network Flow
+C o m p i l a t i o n
+
+
+   2   
+   3  option limrow=8, limcol=100, solprint=off;
+   4   
+   5  set node /A*F/;
+   6  parameter supply(node) /A 50, B 0, C -40, D 40 , E 30, F -80/;
+   7  parameter cost(node,node) /
+   8            A.B   2
+   9            A.C   4
+  10            B.C   1
+  11            B.E   2
+  12            B.D   4
+  13            C.E   3
+  14            D.B   1
+  15            D.F   6
+  16            E.D   3
+  17            E.F   2
+  18  /;
+  19   
+  20  alias (node,i,j,k);
+  21  abort$(smin((i,j), cost(i,j)) lt 0) "bad costs given";
+  22  abort$(sum(i, supply(i)) ne 0) "supply must equal demand";
+  23   
+  24  * define a dynamic set that indicates the "legal" arcs
+  25  set arc(node,node);
+  26  arc(i,j) = yes$(cost(i,j) gt 0);
+  27   
+  28   
+  29  parameter capacity(node,node);
+  30  * assign capacities
+  31  capacity(arc) = +INF;
+  32   
+  33   
+  34  positive variable f(node,node);
+  35  variable totalcost;
+  36   
+  37  equations balance(node), objective;
+  38   
+  39  balance(i)..
+  40    sum(k$arc(i,k), f(i,k)) - sum(j$arc(j,i), f(j,i))
+  41    =e= supply(i);
+  42   
+  43  objective..
+  44    totalcost =e= sum((i,j)$arc(i,j), cost(i,j)*f(i,j));
+  45   
+  46  * apply capacity constraints
+  47  f.up(arc) = capacity(arc);
+  48   
+  49  model mcf /balance, objective/;
+  50   
+  51  solve mcf using lp minimizing totalcost;
+  52   
+  53   option f:0:0:2; display f.l, totalcost.l;
+  54   
+
+
+COMPILATION TIME     =        0.001 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/27/24 07:37:15 Page 2
+Min-Cost Network Flow
+Equation Listing    SOLVE mcf Using LP From line 51
+
+
+---- balance  =E=  
+
+balance(A)..  f(A,B) + f(A,C) =E= 50 ; (LHS = 0, INFES = 50 ****)
+     
+balance(B)..  - f(A,B) + f(B,C) + f(B,D) + f(B,E) - f(D,B) =E= 0 ; (LHS = 0)
+     
+balance(C)..  - f(A,C) - f(B,C) + f(C,E) =E= -40 ; (LHS = 0, INFES = 40 ****)
+     
+balance(D)..  - f(B,D) + f(D,B) + f(D,F) - f(E,D) =E= 40 ; (LHS = 0, INFES = 40 ****)
+     
+balance(E)..  - f(B,E) - f(C,E) + f(E,D) + f(E,F) =E= 30 ; (LHS = 0, INFES = 30 ****)
+     
+balance(F)..  - f(D,F) - f(E,F) =E= -80 ; (LHS = 0, INFES = 80 ****)
+     
+
+---- objective  =E=  
+
+objective..  - 2*f(A,B) - 4*f(A,C) - f(B,C) - 4*f(B,D) - 2*f(B,E) - 3*f(C,E) - f(D,B) - 6*f(D,F) - 3*f(E,D) - 2*f(E,F) + totalcost =E= 0 ; (LHS = 0)
+     
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/27/24 07:37:15 Page 3
+Min-Cost Network Flow
+Column Listing      SOLVE mcf Using LP From line 51
+
+
+---- f  
+
+f(A,B)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       balance(A)
+       -1       balance(B)
+       -2       objective
+
+f(A,C)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       balance(A)
+       -1       balance(C)
+       -4       objective
+
+f(B,C)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       balance(B)
+       -1       balance(C)
+       -1       objective
+
+f(B,D)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       balance(B)
+       -1       balance(D)
+       -4       objective
+
+f(B,E)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       balance(B)
+       -1       balance(E)
+       -2       objective
+
+f(C,E)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       balance(C)
+       -1       balance(E)
+       -3       objective
+
+f(D,B)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       balance(B)
+        1       balance(D)
+       -1       objective
+
+f(D,F)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       balance(D)
+       -1       balance(F)
+       -6       objective
+
+f(E,D)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       balance(D)
+        1       balance(E)
+       -3       objective
+
+f(E,F)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       balance(E)
+       -1       balance(F)
+       -2       objective
+
+
+---- totalcost  
+
+totalcost
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       objective
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/27/24 07:37:15 Page 4
+Min-Cost Network Flow
+Range Statistics    SOLVE mcf Using LP From line 51
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 3.000E+01, 8.000E+01] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 6.000E+00]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/27/24 07:37:15 Page 5
+Min-Cost Network Flow
+Model Statistics    SOLVE mcf Using LP From line 51
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           2     SINGLE EQUATIONS            7
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES           11
+NON ZERO ELEMENTS            31
+
+
+GENERATION TIME      =        0.085 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/27/24 07:37:15 Page 6
+Min-Cost Network Flow
+Solution Report     SOLVE mcf Using LP From line 51
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   mcf                 OBJECTIVE  totalcost
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  COPT                FROM LINE  51
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE              440.0000
+
+ RESOURCE USAGE, LIMIT          0.045 10000000000.000
+ ITERATION COUNT, LIMIT         5    2147483647
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/27/24 07:37:15 Page 7
+Min-Cost Network Flow
+E x e c u t i o n
+
+
+----     53 VARIABLE f.L  
+
+A.B 50,    B.C 40
+B.E 50,    D.B 40
+E.F 80
+
+
+----     53 VARIABLE totalcost.L           =      440.000  
+
+
+EXECUTION TIME       =        0.786 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework6/gams/min-cost-example.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework6/output/min-cost-example.lst

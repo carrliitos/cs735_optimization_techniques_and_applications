@@ -1,0 +1,111 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/27/24 08:40:21 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  * Define the sets for nodes and arcs
+   2  set nodes /1, 2, 3, 4, 5, 6, 7, 8/;
+   3  alias (nodes, i, j);
+   4   
+   5  * Define the arcs explicitly
+   6  set arcs / (1, 2), (2, 7), (7, 6), (2, 3), (3, 4), (4, 5), (5, 3), (8, 1), (8, 7), (8, 4) /;
+****                          $172    $172    $172    $172    $172    $172    $172    $172     $172
+**** 172  Element is redefined
+   7   
+   8  * Define the cost parameter
+   9  parameter cost(nodes, nodes);
+  10  cost(i, j) = 0;
+  11   
+  12  * Define costs for arcs
+  13  cost('1', '2') = 11;
+  14  cost('2', '1') = 11;
+  15  cost('2', '7') = 11;
+  16  cost('7', '2') = 11;
+  17  cost('7', '6') = 11;
+  18  cost('6', '7') = 11;
+  19  cost('2', '3') = 11;
+  20  cost('3', '2') = 11;
+  21  cost('3', '4') = 11;
+  22  cost('4', '3') = 11;
+  23  cost('4', '5') = 11;
+  24  cost('5', '4') = 11;
+  25  cost('5', '3') = 11;
+  26  cost('3', '5') = 11;
+  27  cost('8', '1') = 15;
+  28  cost('1', '8') = 15;
+  29  cost('8', '7') = 21;
+  30  cost('7', '8') = 21;
+  31  cost('8', '4') = 13.5;
+  32  cost('4', '8') = 13.5;
+  33   
+  34  * Define the capacity for each arc
+  35  parameter capacity(nodes, nodes);
+  36  capacity(i, j) = +INF;
+  37   
+  38  * Define the demand at each node and supply at the new source node '8'
+  39  parameter demand(nodes);
+  40  demand('1') = 100;
+  41  demand('4') = 60;
+  42  demand('7') = 80;
+  43  demand('2') = -35;
+  44  demand('5') = -50;
+  45  demand('6') = -60;
+  46  demand('8') = -100;
+  47   
+  48  * Define variables
+  49  positive variable flow(nodes, nodes);
+  50  variable total_cost;
+  51   
+  52  * Define equations
+  53  equations balance(nodes), objective;
+  54   
+  55  * Balance equation for each node
+  56  balance(i) ..
+  57    sum(j$(arcs(i, j)), flow(i, j)) - sum(j$(arcs(j, i)), flow(j, i)) =e= demand(i);
+****                    $148                              $148
+**** 148  Dimension different - The symbol is referenced with more/less
+****         indices as declared
+  58   
+  59  * Objective function: minimize total cost
+  60  objective ..
+  61    total_cost =e= sum((i, j)$(arcs(i, j)), cost(i, j) * flow(i, j));
+****                                        $148
+**** 148  Dimension different - The symbol is referenced with more/less
+****         indices as declared
+  62   
+  63  * Set bounds on flow variables
+  64  flow.up(i, j) = capacity(i, j);
+  65   
+  66  * Define and solve the model
+  67  model min_cost_flow /balance, objective/;
+  68  solve min_cost_flow using lp minimizing total_cost;
+****                                                    $257
+**** 257  Solve statement not checked because of previous errors
+  69   
+  70  * Display results
+  71  option solprint=off;
+  72  display flow.l, total_cost.l;
+****                             $141
+**** 141  Symbol declared but no values have been assigned. Check for missing
+****         data definition, assignment, data loading or implicit assignment
+****         via a solve statement. Suppress with $onImplicitAssign.
+****         A wild shot: You may have spurious commas in the explanatory
+****         text of a declaration. Check symbol reference list.
+
+**** 14 ERROR(S)   0 WARNING(S)
+
+
+COMPILATION TIME     =        0.003 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework6/gams/hw6-1.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework6/output/hw6-1.lst
+
+**** USER ERROR(S) ENCOUNTERED

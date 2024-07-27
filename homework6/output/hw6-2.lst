@@ -1,0 +1,90 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/27/24 07:49:39 Page 1
+Shortest Path Problem
+C o m p i l a t i o n
+
+
+   2   
+   3  option limrow=10, limcol=100, solprint=off;
+   4   
+   5  set nodes /S, A, B, C, D, E, F, T/;
+   6  alias (nodes, i, j);
+   7   
+   8  parameter distance(nodes, nodes) /
+   9      S.A 8,
+  10      S.B 7,
+  11      S.C 4,
+  12      A.B 2,
+  13      A.D 3,
+  14      A.E 9,
+  15      B.E 6,
+  16      B.C 5,
+  17      C.E 7,
+  18      C.F 2,
+  19      D.T 9,
+  20      E.D 3,
+  21      E.T 5,
+  22      E.F 4,
+  23      F.T 8 /;
+  24   
+  25  set arcs(nodes, nodes);
+  26  arc(i, j) = yes$(distance(i, j) > 0);
+****    $140
+**** 140  Unknown symbol
+  27   
+  28  positive variable flow(i, j);
+  29  variable total_cost;
+  30   
+  31  equations balance(nodes), objective;
+  32   
+  33  balance(i) ..
+  34      sum(j$arc(i, j), flow(i, j)) - sum(j$arc(j, i), flow(j, i)) =e= (i = 'S') - (i = 'T');
+****                                                                         $148,135,119,140,8,409
+****   8  ')' expected
+**** 119  Number (primary) expected
+**** 135  Incompatible operands for relational operator
+**** 140  Unknown symbol
+**** 148  Dimension different - The symbol is referenced with more/less
+****         indices as declared
+**** 409  Unrecognizable item - skip to find a new statement
+****        looking for a ';' or a key word to get started again
+  35   
+  36  objective ..
+  37      total_cost =e= sum((i, j)$arc(i, j), distance(i, j) * flow(i, j));
+  38   
+  39  flow.up(i, j) = 1;
+  40   
+  41  model shortest_path /balance, objective/;
+  42   
+  43  solve shortest_path using lp minimizing total_cost;
+****                                                    $257
+**** 257  Solve statement not checked because of previous errors
+  44   
+  45  option f:0:0:2;
+****         $140  $272
+**** 140  Unknown symbol
+**** 272  Dimension not known
+  46  display flow.l, total_cost.l;
+****                             $141
+**** 141  Symbol declared but no values have been assigned. Check for missing
+****         data definition, assignment, data loading or implicit assignment
+****         via a solve statement. Suppress with $onImplicitAssign.
+****         A wild shot: You may have spurious commas in the explanatory
+****         text of a declaration. Check symbol reference list.
+
+**** 11 ERROR(S)   0 WARNING(S)
+
+
+COMPILATION TIME     =        0.003 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework6/gams/hw6-2.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework6/output/hw6-2.lst
+
+**** USER ERROR(S) ENCOUNTERED

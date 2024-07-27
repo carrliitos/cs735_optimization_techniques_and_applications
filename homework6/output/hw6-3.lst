@@ -1,0 +1,119 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/27/24 08:54:49 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  * Define sets for locations
+   2  set locations / Well1, Well2, Mobile, Galveston, NY, LA /;
+   3  alias (locations, i, j);
+   4   
+   5  * Define parameter for shipping costs (per 1000 barrels)
+   6  parameter cost(locations, locations);
+   7  cost(i, j) = 0;
+   8   
+   9  * Set costs based on the given table
+  10  cost('Well1', 'Mobile') = 10;
+  11  cost('Well1', 'Galveston') = 13;
+  12  cost('Well1', 'NY') = 25;
+  13  cost('Well1', 'LA') = 28;
+  14  cost('Well2', 'Mobile') = 15;
+  15  cost('Well2', 'Galveston') = 12;
+  16  cost('Well2', 'NY') = 26;
+  17  cost('Well2', 'LA') = 25;
+  18  cost('Mobile', 'NY') = 16;
+  19  cost('Mobile', 'LA') = 17;
+  20  cost('Galveston', 'NY') = 14;
+  21  cost('Galveston', 'LA') = 16;
+  22   
+  23  * Define the production capacities at the wells
+  24  parameter production(locations);
+  25  production('Well1') = 150000;
+  26  production('Well2') = 200000;
+  27   
+  28  * Define the demand at each destination
+  29  parameter demand(locations);
+  30  demand('NY') = 140000;
+  31  demand('LA') = 160000;
+  32   
+  33  * Define variables
+  34  positive variable x(locations, locations);
+  35  variable total_cost;
+  36   
+  37  * Define equations
+  38  equations supply_constraints, demand_constraints, objective;
+  39   
+  40  * Supply constraints for Wells 1 and 2
+  41  supply_constraints(i) ..
+  42    sum(j$(j = 'Mobile' or j = 'Galveston' or j = 'NY' or j = 'LA'), x(i, j)) =l= production(i);
+****             $148,135,119,140,8,10,119,140,8,300
+****   8  ')' expected
+****  10  ',' expected
+****  37  '=l=' or '=e=' or '=g=' operator expected
+**** 119  Number (primary) expected
+**** 135  Incompatible operands for relational operator
+**** 140  Unknown symbol
+**** 148  Dimension different - The symbol is referenced with more/less
+****         indices as declared
+**** 300  Remaining errors not printed for this line
+**** 409  Unrecognizable item - skip to find a new statement
+****        looking for a ';' or a key word to get started again
+  43   
+  44  * Demand constraints for NY and LA
+  45  demand_constraints(j) ..
+  46    sum(i$(i = 'Well1' or i = 'Well2'), x(i, j)) =g= demand(j);
+****             $148,135,119,140,8,10,119,8,37,300
+****   8  ')' expected
+****  10  ',' expected
+****  37  '=l=' or '=e=' or '=g=' operator expected
+**** 119  Number (primary) expected
+**** 135  Incompatible operands for relational operator
+**** 140  Unknown symbol
+**** 148  Dimension different - The symbol is referenced with more/less
+****         indices as declared
+**** 300  Remaining errors not printed for this line
+**** 409  Unrecognizable item - skip to find a new statement
+****        looking for a ';' or a key word to get started again
+  47   
+  48  * Objective function: minimize total cost
+  49  objective ..
+  50    total_cost =e= sum((i, j)$cost(i, j) > 0, cost(i, j) * x(i, j));
+****                                         $10,119,8,409
+****   8  ')' expected
+****  10  ',' expected
+**** 119  Number (primary) expected
+**** 409  Unrecognizable item - skip to find a new statement
+****        looking for a ';' or a key word to get started again
+  51   
+  52  * Define and solve the model
+  53  model transportation /supply_constraints, demand_constraints, objective/;
+  54  solve transportation using lp minimizing total_cost;
+****                                                     $257
+**** 257  Solve statement not checked because of previous errors
+  55   
+  56  * Display results
+  57  option solprint=on;
+  58  display x.l, total_cost.l;
+****            $141          $141
+**** 141  Symbol declared but no values have been assigned. Check for missing
+****         data definition, assignment, data loading or implicit assignment
+****         via a solve statement. Suppress with $onImplicitAssign.
+****         A wild shot: You may have spurious commas in the explanatory
+****         text of a declaration. Check symbol reference list.
+
+**** 30 ERROR(S)   0 WARNING(S)
+
+
+COMPILATION TIME     =        0.003 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework6/gams/hw6-3.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework6/output/hw6-3.lst
+
+**** USER ERROR(S) ENCOUNTERED
