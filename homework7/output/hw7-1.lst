@@ -1,0 +1,244 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/30/24 19:06:44 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  option limrow=0, limcol=0, solprint=off;
+   2   
+   3  * Introduced upper bound on some arcs
+   4   
+   5  set T /1*10/;
+   6  parameter d(T) / 1 50, 2 60, 3 80, 4 70, 5 50, 6 60, 7 90, 8 80, 9 50, 10 100 /;
+   7   
+   8  scalar
+   9  p /4/
+  10  q /2/
+  11  alpha /2.00/
+  12  beta /0.75/
+  13  gamma /0.25/;
+  14   
+  15  set Nodes /Shop, s1*s10, L1*L10, Storage/;
+  16  set inodes(Nodes) /s1*s10, L1*L10/;
+  17  set snodes(Nodes) /s1*s10/;
+  18  set Lnodes(Nodes) "laundry" /L1*L10/;
+  19   
+  20  alias(Nodes, I, J);
+  21  alias(Lnodes, L);
+  22  alias(snodes, s);
+  23   
+  24  set Arcs(Nodes, Nodes);
+  25   
+  26  Arcs(L, L+1)$(ord(L) < 10) = yes;
+  27  Arcs(L, s)$(ord(s) = ord(L) + 2) = yes;
+  28  Arcs(L, s)$(ord(s) = ord(L) + 4) = yes;
+  29  Arcs('Shop', s) = yes;
+  30  Arcs(s, 'Storage') = yes;
+  31   
+  32  display Arcs;
+  33   
+  34  parameters
+  35    c(Nodes, Nodes)
+  36    u(Nodes, Nodes)
+  37    b(Nodes);
+  38   
+  39  * Set cost parameters
+  40  c('Shop', s) = alpha;
+  41  c(L, L+1) = 0;
+  42  c(L, s)$(ord(s) = ord(L) + 2) = beta;
+  43  c(L, s)$(ord(s) = ord(L) + 4) = gamma;
+  44   
+  45  * Set capacity (upper bound) parameters
+  46  u('Shop', s) = +INF;
+  47  u(s, 'Storage') = +INF;
+  48  u(L, L+1) = +INF;
+  49  u(L, s)$(ord(s) = ord(L) + 2) = +INF;
+  50  u(L, s)$(ord(s) = ord(L) + 4) = +INF;
+  51   
+  52  * Demand and supply nodes
+  53  b('Shop') = sum(T, d(T));
+  54  loop(T,
+  55    b(s)$(ord(s) = ord(T)) = -d(T);
+  56    b(L)$(ord(L) = ord(T)) = d(T);
+  57  );
+  58   
+  59  positive variables x(I, J);
+  60  free variable obj;
+  61   
+  62  equations
+  63    obj_eq
+  64    flow_balance(Nodes);
+  65   
+  66  * Objective function
+  67  obj_eq.. obj =e= sum((I, J)$(Arcs(I, J)), c(I, J)*x(I, J));
+  68   
+  69  * Flow balance constraints
+  70  flow_balance(Nodes).. sum(J$(Arcs(J, Nodes)), x(J, Nodes)) - sum(J$(Arcs(Nodes, J)), x(Nodes, J)) =e= b(Nodes);
+  71   
+  72  x.up(I, J)$(Arcs(I, J)) = u(I, J);
+  73   
+  74  model prob1 /all/;
+  75  solve prob1 using lp minimizing obj;
+  76   
+  77  * Dual infeasibility calculation
+  78  parameter infeasibility(Nodes);
+  79  infeasibility(Nodes) = abs(flow_balance.m(Nodes));
+  80  display infeasibility;
+  81   
+  82  * Diagnostics
+  83  display x.l, x.m, x.up, b;
+  84   
+  85  parameter Cost, NumEqu, NumBought;
+  86  Cost = obj.l;
+  87  NumEqu = 1 + card(inodes);
+  88  NumBought = sum(s, x.l('Shop', s));
+  89  display Cost, NumEqu, NumBought;
+
+
+COMPILATION TIME     =        0.001 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/30/24 19:06:44 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     32 SET Arcs  
+
+              s1          s2          s3          s4          s5          s6          s7          s8          s9         s10          L2          L3          L4          L5          L6          L7          L8          L9         L10     Storage
+
+Shop         YES         YES         YES         YES         YES         YES         YES         YES         YES         YES
+s1                                                                                                                                                                                                                                               YES
+s2                                                                                                                                                                                                                                               YES
+s3                                                                                                                                                                                                                                               YES
+s4                                                                                                                                                                                                                                               YES
+s5                                                                                                                                                                                                                                               YES
+s6                                                                                                                                                                                                                                               YES
+s7                                                                                                                                                                                                                                               YES
+s8                                                                                                                                                                                                                                               YES
+s9                                                                                                                                                                                                                                               YES
+s10                                                                                                                                                                                                                                              YES
+L1                                   YES                     YES                                                                     YES
+L2                                               YES                     YES                                                                     YES
+L3                                                           YES                     YES                                                                     YES
+L4                                                                       YES                     YES                                                                     YES
+L5                                                                                   YES                     YES                                                                     YES
+L6                                                                                               YES                     YES                                                                     YES
+L7                                                                                                           YES                                                                                             YES
+L8                                                                                                                       YES                                                                                             YES
+L9                                                                                                                                                                                                                                   YES
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/30/24 19:06:44 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE prob1 Using LP From line 75
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 5.000E+01, 6.900E+02] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 2.500E-01, 2.000E+00]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/30/24 19:06:44 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE prob1 Using LP From line 75
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           2     SINGLE EQUATIONS           23
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES           44
+NON ZERO ELEMENTS           111
+
+
+GENERATION TIME      =        0.004 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/30/24 19:06:44 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE prob1 Using LP From line 75
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   prob1               OBJECTIVE  obj
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  COPT                FROM LINE  75
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      4 Infeasible
+**** OBJECTIVE VALUE                0.0000
+
+ RESOURCE USAGE, LIMIT          0.006 10000000000.000
+ ITERATION COUNT, LIMIT         0    2147483647
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                            11 INFEASIBLE (INFES)
+                    SUM       1380.0000
+                    MAX        690.0000
+                    MEAN       125.4545
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/30/24 19:06:44 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     80 PARAMETER infeasibility  
+
+Shop    1.000,    s1        EPS,    s2        EPS,    s3        EPS,    s4        EPS,    s5        EPS,    s6        EPS,    s7        EPS,    s8        EPS,    s9        EPS,    s10       EPS,    L1      1.000,    L2      1.000,    L3      1.000,    L4      1.000,    L5      1.000,    L6      1.000,    L7      1.000,    L8      1.000,    L9      1.000,    L10     1.000,    Storage   EPS
+
+
+----     83 VARIABLE x.L  
+
+                      ( ALL       0.000 )
+
+
+----     83 VARIABLE x.M  
+
+              s1          s2          s3          s4          s5          s6          s7          s8          s9         s10          L2          L3          L4          L5          L6          L7          L8          L9         L10     Storage
+
+Shop       1.000       1.000       1.000       1.000       1.000       1.000       1.000       1.000       1.000       1.000
+s1                                                                                                                                                                                                                                               EPS
+s2                                                                                                                                                                                                                                               EPS
+s3                                                                                                                                                                                                                                               EPS
+s4                                                                                                                                                                                                                                               EPS
+s5                                                                                                                                                                                                                                               EPS
+s6                                                                                                                                                                                                                                               EPS
+s7                                                                                                                                                                                                                                               EPS
+s8                                                                                                                                                                                                                                               EPS
+s9                                                                                                                                                                                                                                               EPS
+s10                                                                                                                                                                                                                                              EPS
+L1                                 1.000                   1.000                                                                     EPS
+L2                                             1.000                   1.000                                                                     EPS
+L3                                                         1.000                   1.000                                                                     EPS
+L4                                                                     1.000                   1.000                                                                     EPS
+L5                                                                                 1.000                   1.000                                                                     EPS
+L6                                                                                             1.000                   1.000                                                                     EPS
+L7                                                                                                         1.000                                                                                             EPS
+L8                                                                                                                     1.000                                                                                             EPS
+L9                                                                                                                                                                                                                                   EPS
+
+
+----     83 VARIABLE x.Up (+INF) 
+
+                      ( ALL        +INF )
+
+
+----     83 PARAMETER b  
+
+Shop  690.000,    s1    -50.000,    s2    -60.000,    s3    -80.000,    s4    -70.000,    s5    -50.000,    s6    -60.000,    s7    -90.000,    s8    -80.000,    s9    -50.000,    s10  -100.000,    L1     50.000,    L2     60.000,    L3     80.000,    L4     70.000,    L5     50.000,    L6     60.000,    L7     90.000,    L8     80.000,    L9     50.000,    L10   100.000
+
+
+----     89 PARAMETER Cost                 =        0.000  
+            PARAMETER NumEqu               =       21.000  
+            PARAMETER NumBought            =        0.000  
+
+
+EXECUTION TIME       =        0.036 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework7/gams/hw7-1.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework7/output/hw7-1.lst

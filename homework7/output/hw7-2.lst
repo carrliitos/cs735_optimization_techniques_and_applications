@@ -1,0 +1,371 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/30/24 19:30:53 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  set nodes / S, A, B, C, D, E, F, T /;
+   2  alias (nodes, i, j);
+   3   
+   4  parameter capacity(nodes, nodes);
+   5  capacity(i, j) = 0;
+   6   
+   7  * Set capacities based on the given graph
+   8  capacity('S', 'A') = 8;
+   9  capacity('S', 'B') = 7;
+  10  capacity('S', 'C') = 4;
+  11  capacity('A', 'B') = 2;
+  12  capacity('A', 'D') = 3;
+  13  capacity('A', 'E') = 9;
+  14  capacity('B', 'C') = 5;
+  15  capacity('B', 'E') = 6;
+  16  capacity('C', 'E') = 7;
+  17  capacity('C', 'F') = 2;
+  18  capacity('D', 'T') = 9;
+  19  capacity('E', 'D') = 3;
+  20  capacity('E', 'T') = 5;
+  21  capacity('E', 'F') = 4;
+  22  capacity('F', 'T') = 8;
+  23   
+  24  positive variable flow(nodes, nodes);
+  25  variable maxFlow;
+  26   
+  27  equation flow_balance, capacity_constraints, objective, source_balance, sink_balance;
+  28   
+  29  * Flow balance constraints for all nodes except S and T
+  30  flow_balance(i)..
+  31      sum(j$(capacity(i, j) > 0), flow(i, j)) - sum(j$(capacity(j, i) > 0), flow(j, i)) =g= 0;
+  32   
+  33  * Flow balance constraint for source node
+  34  source_balance..
+  35      sum(j$(capacity('S', j) > 0), flow('S', j)) =e= maxFlow;
+  36   
+  37  * Flow balance constraint for sink node
+  38  sink_balance..
+  39      sum(i$(capacity(i, 'T') > 0), flow(i, 'T')) =e= maxFlow;
+  40   
+  41  * Capacity constraints for all arcs
+  42  capacity_constraints(i, j)..
+  43      flow(i, j) =l= capacity(i, j);
+  44   
+  45  * Objective: maximize the flow from S to T
+  46  objective..
+  47      maxFlow =e= sum(j$(capacity('S', j) > 0), flow('S', j));
+  48   
+  49  Model max_flow /all/;
+  50  Solve max_flow using lp maximizing maxFlow;
+  51   
+  52  option solprint = on;
+  53  display flow.l, maxFlow.l;
+
+
+COMPILATION TIME     =        0.001 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/30/24 19:30:53 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE max_flow Using LP From line 50
+
+
+---- flow_balance  =G=  
+
+flow_balance(S)..  flow(S,A) + flow(S,B) + flow(S,C) =G= 0 ; (LHS = 0)
+     
+flow_balance(A)..  - flow(S,A) + flow(A,B) + flow(A,D) + flow(A,E) =G= 0 ; (LHS = 0)
+     
+flow_balance(B)..  - flow(S,B) - flow(A,B) + flow(B,C) + flow(B,E) =G= 0 ; (LHS = 0)
+     
+REMAINING 5 ENTRIES SKIPPED
+
+
+---- capacity_constraints  =L=  
+
+capacity_constraints(S,S)..  flow(S,S) =L= 0 ; (LHS = 0)
+     
+capacity_constraints(S,A)..  flow(S,A) =L= 8 ; (LHS = 0)
+     
+capacity_constraints(S,B)..  flow(S,B) =L= 7 ; (LHS = 0)
+     
+REMAINING 61 ENTRIES SKIPPED
+
+
+---- objective  =E=  
+
+objective..  - flow(S,A) - flow(S,B) - flow(S,C) + maxFlow =E= 0 ; (LHS = 0)
+     
+
+---- source_balance  =E=  
+
+source_balance..  flow(S,A) + flow(S,B) + flow(S,C) - maxFlow =E= 0 ; (LHS = 0)
+     
+
+---- sink_balance  =E=  
+
+sink_balance..  flow(D,T) + flow(E,T) + flow(F,T) - maxFlow =E= 0 ; (LHS = 0)
+     
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/30/24 19:30:53 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE max_flow Using LP From line 50
+
+
+---- flow  
+
+flow(S,S)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       capacity_constraints(S,S)
+
+flow(S,A)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       flow_balance(S)
+       -1       flow_balance(A)
+        1       capacity_constraints(S,A)
+       -1       objective
+        1       source_balance
+
+flow(S,B)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       flow_balance(S)
+       -1       flow_balance(B)
+        1       capacity_constraints(S,B)
+       -1       objective
+        1       source_balance
+
+REMAINING 61 ENTRIES SKIPPED
+
+---- maxFlow  
+
+maxFlow
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       objective
+       -1       source_balance
+       -1       sink_balance
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/30/24 19:30:53 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE max_flow Using LP From line 50
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 2.000E+00, 9.000E+00] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 1.000E+00]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/30/24 19:30:53 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE max_flow Using LP From line 50
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           5     SINGLE EQUATIONS           75
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES           65
+NON ZERO ELEMENTS           106
+
+
+GENERATION TIME      =        0.002 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/30/24 19:30:53 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE max_flow Using LP From line 50
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   max_flow            OBJECTIVE  maxFlow
+     TYPE    LP                  DIRECTION  MAXIMIZE
+     SOLVER  COPT                FROM LINE  50
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE               -0.0000
+
+ RESOURCE USAGE, LIMIT          0.017 10000000000.000
+ ITERATION COUNT, LIMIT         0    2147483647
+
+---- EQU flow_balance  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+S          .              .            +INF             .          
+A          .              .            +INF             .          
+B          .              .            +INF             .          
+C          .              .            +INF             .          
+D          .              .            +INF             .          
+E          .              .            +INF             .          
+F          .              .            +INF             .          
+T          .              .            +INF           -1.0000      
+
+---- EQU capacity_constraints  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+S.S        -INF             .              .              .          
+S.A        -INF             .             8.0000          .          
+S.B        -INF             .             7.0000          .          
+S.C        -INF             .             4.0000          .          
+S.D        -INF             .              .              .          
+S.E        -INF             .              .              .          
+S.F        -INF             .              .              .          
+S.T        -INF             .              .              .          
+A.S        -INF             .              .              .          
+A.A        -INF             .              .              .          
+A.B        -INF             .             2.0000          .          
+A.C        -INF             .              .              .          
+A.D        -INF             .             3.0000          .          
+A.E        -INF             .             9.0000          .          
+A.F        -INF             .              .              .          
+A.T        -INF             .              .              .          
+B.S        -INF             .              .              .          
+B.A        -INF             .              .              .          
+B.B        -INF             .              .              .          
+B.C        -INF             .             5.0000          .          
+B.D        -INF             .              .              .          
+B.E        -INF             .             6.0000          .          
+B.F        -INF             .              .              .          
+B.T        -INF             .              .              .          
+C.S        -INF             .              .              .          
+C.A        -INF             .              .              .          
+C.B        -INF             .              .              .          
+C.C        -INF             .              .              .          
+C.D        -INF             .              .              .          
+C.E        -INF             .             7.0000          .          
+C.F        -INF             .             2.0000          .          
+C.T        -INF             .              .              .          
+D.S        -INF             .              .              .          
+D.A        -INF             .              .              .          
+D.B        -INF             .              .              .          
+D.C        -INF             .              .              .          
+D.D        -INF             .              .              .          
+D.E        -INF             .              .              .          
+D.F        -INF             .              .              .          
+D.T        -INF             .             9.0000          .          
+E.S        -INF             .              .              .          
+E.A        -INF             .              .              .          
+E.B        -INF             .              .              .          
+E.C        -INF             .              .              .          
+E.D        -INF             .             3.0000          .          
+E.E        -INF             .              .              .          
+E.F        -INF             .             4.0000          .          
+E.T        -INF             .             5.0000          .          
+F.S        -INF             .              .              .          
+F.A        -INF             .              .              .          
+F.B        -INF             .              .              .          
+F.C        -INF             .              .              .          
+F.D        -INF             .              .              .          
+F.E        -INF             .              .              .          
+F.F        -INF             .              .              .          
+F.T        -INF             .             8.0000          .          
+T.S        -INF             .              .              .          
+T.A        -INF             .              .              .          
+T.B        -INF             .              .              .          
+T.C        -INF             .              .              .          
+T.D        -INF             .              .              .          
+T.E        -INF             .              .              .          
+T.F        -INF             .              .              .          
+T.T        -INF             .              .              .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU objective           .              .              .              .          
+---- EQU source_ba~          .              .              .              .          
+---- EQU sink_bala~          .              .              .            -1.0000      
+
+---- VAR flow  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+S.S          .              .            +INF            EPS         
+S.A          .              .            +INF            EPS         
+S.B          .              .            +INF            EPS         
+S.C          .              .            +INF            EPS         
+S.D          .              .            +INF            EPS         
+S.E          .              .            +INF            EPS         
+S.F          .              .            +INF            EPS         
+S.T          .              .            +INF            EPS         
+A.S          .              .            +INF            EPS         
+A.A          .              .            +INF            EPS         
+A.B          .              .            +INF            EPS         
+A.C          .              .            +INF            EPS         
+A.D          .              .            +INF            EPS         
+A.E          .              .            +INF            EPS         
+A.F          .              .            +INF            EPS         
+A.T          .              .            +INF            EPS         
+B.S          .              .            +INF            EPS         
+B.A          .              .            +INF            EPS         
+B.B          .              .            +INF            EPS         
+B.C          .              .            +INF            EPS         
+B.D          .              .            +INF            EPS         
+B.E          .              .            +INF            EPS         
+B.F          .              .            +INF            EPS         
+B.T          .              .            +INF            EPS         
+C.S          .              .            +INF            EPS         
+C.A          .              .            +INF            EPS         
+C.B          .              .            +INF            EPS         
+C.C          .              .            +INF            EPS         
+C.D          .              .            +INF            EPS         
+C.E          .              .            +INF            EPS         
+C.F          .              .            +INF            EPS         
+C.T          .              .            +INF            EPS         
+D.S          .              .            +INF            EPS         
+D.A          .              .            +INF            EPS         
+D.B          .              .            +INF            EPS         
+D.C          .              .            +INF            EPS         
+D.D          .              .            +INF            EPS         
+D.E          .              .            +INF            EPS         
+D.F          .              .            +INF            EPS         
+D.T          .              .            +INF            EPS         
+E.S          .              .            +INF            EPS         
+E.A          .              .            +INF            EPS         
+E.B          .              .            +INF            EPS         
+E.C          .              .            +INF            EPS         
+E.D          .              .            +INF            EPS         
+E.E          .              .            +INF            EPS         
+E.F          .              .            +INF            EPS         
+E.T          .              .            +INF            EPS         
+F.S          .              .            +INF            EPS         
+F.A          .              .            +INF            EPS         
+F.B          .              .            +INF            EPS         
+F.C          .              .            +INF            EPS         
+F.D          .              .            +INF            EPS         
+F.E          .              .            +INF            EPS         
+F.F          .              .            +INF            EPS         
+F.T          .              .            +INF             .          
+T.S          .              .            +INF            EPS         
+T.A          .              .            +INF            EPS         
+T.B          .              .            +INF            EPS         
+T.C          .              .            +INF            EPS         
+T.D          .              .            +INF            EPS         
+T.E          .              .            +INF            EPS         
+T.F          .              .            +INF            EPS         
+T.T          .              .            +INF            EPS         
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR maxFlow           -INF             .            +INF             .          
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 07/30/24 19:30:53 Page 7
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     53 VARIABLE flow.L  
+
+                      ( ALL       0.000 )
+
+
+----     53 VARIABLE maxFlow.L             =        0.000  
+
+
+EXECUTION TIME       =        0.042 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework7/gams/hw7-2.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework7/output/hw7-2.lst
