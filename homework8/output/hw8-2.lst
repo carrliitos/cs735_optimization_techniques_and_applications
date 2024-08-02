@@ -1,0 +1,183 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/02/24 18:41:37 Page 1
+Problem 8-2 (MIP) Traveling Salesman with MTZ Formulation
+C o m p i l a t i o n
+
+
+   2  option limrow = 0, limcol = 0, solprint=off;
+   3   
+       
+      Traveling salesman problem with MTZ formulation
+       
+      Find the closed tour that visits all ten cities and has the minimum total length. Distances between pairs of cities are given in the table below:
+       
+              ATL     ORD     DEN     IAH     LAX     MIA     JFK     SFO     SEA     DCA
+      ATL     0       587     1212    701     1936    604     748     2139    2182    543
+      ORD     587     0       920     940     1745    1188    713     1858    1737    597
+      DEN     1212    920     0       879     831     1726    1631    949     1021    1494
+      IAH     701     940     879     0       1379    968     1420    1645    1891    1220
+      LAX     1936    1745    831     1379    0       2339    2451    347     959     2300
+      MIA     604     1188    1726    968     2339    0       1092    2594    2734    923
+      JFK     748     713     1631    1420    2451    1092    0       2571    2408    205
+      SFO     2139    1858    949     1645    347     2594    2571    0       678     2442
+      SEA     2182    1737    1021    1891    959     2734    2408    678     0       2329
+      DCA     543     597     1494    1220    2300    923     205     2442    2329    0
+       
+  23   
+  24  sets i Cities / c1 'ALT', c2 'ORD', c3 'DEN', c4 'IAH', c5 'LAX',
+  25                  c6 'MIA', c7 'JFK', c8 'SFO', c9 'SEA', c10 'DCA' /
+  26  alias (i,j,k);
+  27   
+  28  * Distance between pairs of cities
+  29  table d(i,j)
+  30          c1     c2     c3     c4     c5     c6     c7     c8     c9     c10
+  31  c1      0      587    1212   701    1936   604    748    2139   2182   543
+  32  c2      587    0      920    940    1745   1188   713    1858   1737   597
+  33  c3      1212   920    0      879    831    1726   1631   949    1021   1494
+  34  c4      701    940    879    0      1379   968    1420   1645   1891   1220
+  35  c5      1936   1745   831    1379   0      2339   2451   347    959    2300
+  36  c6      604    1188   1726   968    2339   0      1092   2594   2734   923
+  37  c7      748    713    1631   1420   2451   1092   0      2571   2408   205
+  38  c8      2139   1858   949    1645   347    2594   2571   0      678    2442
+  39  c9      2182   1737   1021   1891   959    2734   2408   678    0      2329
+  40  c10     543    597    1494   1220   2300   923    205    2442   2329   0
+  41  ;
+  42   
+  43  binary variables x(i,j);
+  44  free variable obj;
+  45  positive variables u(i);
+  46   
+  47  equations
+  48  objective "Objective Function",
+  49  cons1(j) "One incoming path to each city j",
+  50  cons2(i) "One outgoing path from each city i",
+  51  cons3(i,j) "MTZ Constraints",
+  52  cons4(i) "No self-loops";
+  53   
+  54  * EQUATION (MODEL) DEFINITION
+  55  objective..
+  56    obj =e= sum((i,j), d(i,j)*x(i,j));
+  57   
+  58  cons1(j)..
+  59    sum(i, x(i,j)) =e= 1;
+  60   
+  61  cons2(i)..
+  62    sum(j, x(i,j)) =e= 1;
+  63   
+  64  cons3(i,j)..
+  65    u(i) - u(j) + (card(i)-1)*x(i,j) =l= card(i)-2;
+  66   
+  67  cons4(i)..
+  68    x(i,i) =e= 0;
+  69   
+  70  model prob2 /all/;
+  71  Option optcr=0.0;
+  72  solve prob2 using mip minimizing obj;
+  73   
+  74  display obj.l, x.l;
+  75   
+  76  parameter index, nextindex;
+  77  index=1;
+  78   
+  79  file hw8_2results / hw8_2results.txt/;
+  80  put hw8_2results 'Solution 2'/;
+  81   
+  82  loop(k,
+  83    loop(i$(ord(i)=index),
+  84      loop(j$ ( x.l(i,j)=1),
+  85        nextindex = ord(j);
+  86        ));
+  87   
+  88        put "->"
+  89        put nextindex:2:0 ;
+  90   
+  91        index = nextindex;
+  92      );
+  93   
+  94  put / "Total distance =", obj.l;
+
+
+COMPILATION TIME     =        0.001 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/02/24 18:41:37 Page 2
+Problem 8-2 (MIP) Traveling Salesman with MTZ Formulation
+Range Statistics    SOLVE prob2 Using MIP From line 72
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 1.000E+00, 8.000E+00] - Zero values observed as well
+Bound     [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 2.734E+03]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/02/24 18:41:37 Page 3
+Problem 8-2 (MIP) Traveling Salesman with MTZ Formulation
+Model Statistics    SOLVE prob2 Using MIP From line 72
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           5     SINGLE EQUATIONS          131
+BLOCKS OF VARIABLES           3     SINGLE VARIABLES          111
+NON ZERO ELEMENTS           581     DISCRETE VARIABLES        100
+
+
+GENERATION TIME      =        0.005 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/02/24 18:41:37 Page 4
+Problem 8-2 (MIP) Traveling Salesman with MTZ Formulation
+Solution Report     SOLVE prob2 Using MIP From line 72
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   prob2               OBJECTIVE  obj
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  72
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      10 Integer Infeasible
+**** OBJECTIVE VALUE               NA
+
+ RESOURCE USAGE, LIMIT        143.264 10000000000.000
+ ITERATION COUNT, LIMIT         0    2147483647
+--- GAMS/CPLEX licensed for continuous and discrete problems.
+--- GMO setup time: 0.00s
+--- GMO memory 0.53 Mb (peak 0.53 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.00 Mb (peak 0.02 Mb)
+--- Starting Cplex
+
+
+--- MIP status (103): integer infeasible.
+--- Cplex Time: 143.26sec (det. 56587.94 ticks)
+
+--- Problem is integer infeasible
+
+No solution returned
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/02/24 18:41:37 Page 5
+Problem 8-2 (MIP) Traveling Salesman with MTZ Formulation
+E x e c u t i o n
+
+
+----     74 VARIABLE obj.L                 =        0.000  
+
+----     74 VARIABLE x.L  
+
+                      ( ALL       0.000 )
+
+
+**** REPORT FILE SUMMARY
+
+hw8_2results /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework8/hw8_2results.txt
+
+
+EXECUTION TIME       =      143.301 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework8/gams/hw8-2.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework8/output/hw8-2.lst
