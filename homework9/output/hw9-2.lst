@@ -1,0 +1,460 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:25:47 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+      2. The General Eccentric Power and Lighting Company has a system
+      consisting of two dams and their associated reservoirs and power
+      plants on a river. The important flows of power and water are shown
+      in the following diagram:<p>
+      In the following table, all quantities measuring water are in units
+      of 1000 acre-feet (KAF's). Power is measured in megawatt hours
+      (MWH's). <p>
+      <pre>
+       
+                                                A               B           Units
+      Storage Capacity                        2000            1500            KAF
+      Minimum allowable level                 1200             800            KAF
+      Predicted inflow:
+              March                            200              40            KAF
+              April                            130              15            KAF
+      March 1 level                           1900             850            KAF
+      Water-Power Conversion                   400             200        MWH/KAF
+      Power Plant Capacity                  60,000          35,000       MWH/month
+      </pre>
+      Power can be sold at $5.00 per MWH for up to 50,000 MWH each month,
+      and excess power above that figure can be sold for $3.50 per MWH.
+      Assume flow rates in and out through the power plants are constant
+      within the month.
+      <p>
+      (a) Suppose there is a spillway by each reservoir that allows water to
+      spill out (at any level) and bypass the relevant power plant.
+      A consequence of these assumptions is that the maximum and minimum
+      water-level constraints need to be satisfied only at the end of the
+      month.
+      Formulate a linear program to maximize the amount of money General
+      Eccentric receives for the power it sells during the months of March
+      and April, given the constraints.
+  35   
+  36  set plant /a,b/;
+  37  set month /mar,apr/;
+  38  set ptype /normal,excess/;
+  39   
+  40  parameter price(ptype) /
+  41  normal  5
+  42  excess  3.5
+  43  /;
+  44   
+  45  table data(*,plant)
+  46                          a       b
+  47  store-cap               2000    1500
+  48  min-lev                 1200    800
+  49  mar-lev                 1900    850
+  50  conv-rate               400     200
+  51  plant-cap               60000   35000 ;
+  52   
+  53  table inflow(month,plant)
+  54                  a       b
+  55  mar             200     40
+  56  apr             130     15 ;
+  57   
+  58  variables
+  59          profit,
+  60          resLev(month,plant) "level in reservoir at end of month",
+  61          spill(month,plant) "amount of water spilt out of reservoir",
+  62          water(month,plant) "amount of water sent to power plant",
+  63          power(month,plant) "power generated per plant each month",
+  64          genPower(month,ptype) "type of power generated each month";
+  65   
+  66  positive variable
+  67          power(month,plant) "power generated per plant each month",
+  68          genPower(month,ptype) "type of power generated each month",
+  69          spill(month,plant) "amount of water spilt out of reservoir",
+  70          water(month,plant) "amount of water sent to power plant";
+  71   
+  72  equations
+  73          level_eq(month,plant),
+  74          convert_eq(month,plant),
+  75          split_eq(month),
+  76          power_eq(month),
+  77          objective_eq;
+  78   
+  79  * Equation for reservoir levels
+  80  level_eq(month,plant)..
+  81  resLev(month,plant) =e=
+  82          resLev(month-1,plant) + data("mar-lev",plant)$(ord(month) eq 1)
+  83          + inflow(month,plant) - spill(month,plant)
+  84          - water(month,plant);
+  85   
+  86  * Equation for power conversion
+  87  convert_eq(month,plant)..
+  88  power(month,plant) =e= data("conv-rate",plant)*water(month,plant);
+  89   
+  90  * Equation for power generation split
+  91  split_eq(month)..
+  92  genPower(month,"normal") + genPower(month,"excess") =e= sum(plant, power(month,plant));
+  93   
+  94  * Equation for total power
+  95  power_eq(month)..
+  96  genPower(month,"normal") =l= 50000;
+  97   
+  98  * Objective function
+  99  objective_eq..
+ 100  profit =e= sum((month,ptype), price(ptype)*genPower(month,ptype));
+ 101   
+ 102  * Bounds and constraints
+ 103  resLev.lo(month,plant) = data("min-lev",plant);
+ 104  resLev.up(month,plant) = data("store-cap",plant);
+ 105  power.up(month,plant) = data("plant-cap",plant);
+ 106  * No limit on spill
+ 107  spill.up(month,plant) = 1e6;
+ 108   
+ 109  model reservoir /all/;
+ 110  solve reservoir using lp maximizing profit;
+ 111   
+ 112  display profit.l, resLev.l, spill.l, water.l, power.l, genPower.l;
+
+
+COMPILATION TIME     =        0.001 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:25:47 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE reservoir Using LP From line 110
+
+
+---- level_eq  =E=  
+
+level_eq(mar,a)..  resLev(mar,a) + spill(mar,a) + water(mar,a) =E= 2100 ; (LHS = 1200, INFES = 900 ****)
+     
+level_eq(mar,b)..  resLev(mar,b) + spill(mar,b) + water(mar,b) =E= 890 ; (LHS = 800, INFES = 90 ****)
+     
+level_eq(apr,a)..  - resLev(mar,a) + resLev(apr,a) + spill(apr,a) + water(apr,a) =E= 130 ; (LHS = 0, INFES = 130 ****)
+     
+REMAINING ENTRY SKIPPED
+
+
+---- convert_eq  =E=  
+
+convert_eq(mar,a)..  - 400*water(mar,a) + power(mar,a) =E= 0 ; (LHS = 0)
+     
+convert_eq(mar,b)..  - 200*water(mar,b) + power(mar,b) =E= 0 ; (LHS = 0)
+     
+convert_eq(apr,a)..  - 400*water(apr,a) + power(apr,a) =E= 0 ; (LHS = 0)
+     
+REMAINING ENTRY SKIPPED
+
+
+---- split_eq  =E=  
+
+split_eq(mar)..  - power(mar,a) - power(mar,b) + genPower(mar,normal) + genPower(mar,excess) =E= 0 ; (LHS = 0)
+     
+split_eq(apr)..  - power(apr,a) - power(apr,b) + genPower(apr,normal) + genPower(apr,excess) =E= 0 ; (LHS = 0)
+     
+
+---- power_eq  =L=  
+
+power_eq(mar)..  genPower(mar,normal) =L= 50000 ; (LHS = 0)
+     
+power_eq(apr)..  genPower(apr,normal) =L= 50000 ; (LHS = 0)
+     
+
+---- objective_eq  =E=  
+
+objective_eq..  profit - 5*genPower(mar,normal) - 3.5*genPower(mar,excess) - 5*genPower(apr,normal) - 3.5*genPower(apr,excess) =E= 0 ; (LHS = 0)
+     
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:25:47 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE reservoir Using LP From line 110
+
+
+---- profit  
+
+profit
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       objective_eq
+
+
+---- resLev  level in reservoir at end of month
+
+resLev(mar,a)
+                (.LO, .L, .UP, .M = 1200, 1200, 2000, 0)
+        1       level_eq(mar,a)
+       -1       level_eq(apr,a)
+        0       (OLD LEVEL ****)
+
+resLev(mar,b)
+                (.LO, .L, .UP, .M = 800, 800, 1500, 0)
+        1       level_eq(mar,b)
+       -1       level_eq(apr,b)
+        0       (OLD LEVEL ****)
+
+resLev(apr,a)
+                (.LO, .L, .UP, .M = 1200, 1200, 2000, 0)
+        1       level_eq(apr,a)
+        0       (OLD LEVEL ****)
+
+REMAINING ENTRY SKIPPED
+
+---- spill  amount of water spilt out of reservoir
+
+spill(mar,a)
+                (.LO, .L, .UP, .M = 0, 0, 1000000, 0)
+        1       level_eq(mar,a)
+
+spill(mar,b)
+                (.LO, .L, .UP, .M = 0, 0, 1000000, 0)
+        1       level_eq(mar,b)
+
+spill(apr,a)
+                (.LO, .L, .UP, .M = 0, 0, 1000000, 0)
+        1       level_eq(apr,a)
+
+REMAINING ENTRY SKIPPED
+
+---- water  amount of water sent to power plant
+
+water(mar,a)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       level_eq(mar,a)
+     -400       convert_eq(mar,a)
+
+water(mar,b)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       level_eq(mar,b)
+     -200       convert_eq(mar,b)
+
+water(apr,a)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       level_eq(apr,a)
+     -400       convert_eq(apr,a)
+
+REMAINING ENTRY SKIPPED
+
+---- power  power generated per plant each month
+
+power(mar,a)
+                (.LO, .L, .UP, .M = 0, 0, 60000, 0)
+        1       convert_eq(mar,a)
+       -1       split_eq(mar)
+
+power(mar,b)
+                (.LO, .L, .UP, .M = 0, 0, 35000, 0)
+        1       convert_eq(mar,b)
+       -1       split_eq(mar)
+
+power(apr,a)
+                (.LO, .L, .UP, .M = 0, 0, 60000, 0)
+        1       convert_eq(apr,a)
+       -1       split_eq(apr)
+
+REMAINING ENTRY SKIPPED
+
+---- genPower  type of power generated each month
+
+genPower(mar,normal)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       split_eq(mar)
+        1       power_eq(mar)
+       -5       objective_eq
+
+genPower(mar,excess)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       split_eq(mar)
+       -3.5     objective_eq
+
+genPower(apr,normal)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       split_eq(apr)
+        1       power_eq(apr)
+       -5       objective_eq
+
+REMAINING ENTRY SKIPPED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:25:47 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE reservoir Using LP From line 110
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 1.500E+01, 5.000E+04] - Zero values observed as well
+Bound     [min, max] : [ 8.000E+02, 1.000E+06] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 4.000E+02]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:25:47 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE reservoir Using LP From line 110
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           5     SINGLE EQUATIONS           13
+BLOCKS OF VARIABLES           6     SINGLE VARIABLES           21  4 projected
+NON ZERO ELEMENTS            37
+
+
+GENERATION TIME      =        0.002 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:25:47 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE reservoir Using LP From line 110
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   reservoir           OBJECTIVE  profit
+     TYPE    LP                  DIRECTION  MAXIMIZE
+     SOLVER  COPT                FROM LINE  110
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE           643500.0000
+
+ RESOURCE USAGE, LIMIT          0.044 10000000000.000
+ ITERATION COUNT, LIMIT         5    2147483647
+
+---- EQU level_eq  
+
+             LOWER          LEVEL          UPPER         MARGINAL
+
+mar.a      2100.0000      2100.0000      2100.0000         EPS         
+mar.b       890.0000       890.0000       890.0000       700.0000      
+apr.a       130.0000       130.0000       130.0000         EPS         
+apr.b        15.0000        15.0000        15.0000       700.0000      
+
+---- EQU convert_eq  
+
+             LOWER          LEVEL          UPPER         MARGINAL
+
+mar.a          .              .              .             EPS         
+mar.b          .              .              .             3.5000      
+apr.a          .              .              .             EPS         
+apr.b          .              .              .             3.5000      
+
+---- EQU split_eq  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+mar          .              .              .             3.5000      
+apr          .              .              .             3.5000      
+
+---- EQU power_eq  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+mar        -INF        50000.0000     50000.0000         1.5000      
+apr        -INF        50000.0000     50000.0000         1.5000      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU objective~          .              .              .             1.0000      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR profit            -INF       643500.0000        +INF             .          
+
+---- VAR resLev  level in reservoir at end of month
+
+             LOWER          LEVEL          UPPER         MARGINAL
+
+mar.a      1200.0000      1220.0000      2000.0000          .          
+mar.b       800.0000       800.0000      1500.0000         EPS         
+apr.a      1200.0000      1200.0000      2000.0000         EPS         
+apr.b       800.0000       800.0000      1500.0000      -700.0000      
+
+---- VAR spill  amount of water spilt out of reservoir
+
+             LOWER          LEVEL          UPPER         MARGINAL
+
+mar.a          .           730.0000   1000000.0000          .          
+mar.b          .              .       1000000.0000      -700.0000      
+apr.a          .              .       1000000.0000         EPS         
+apr.b          .              .       1000000.0000      -700.0000      
+
+---- VAR water  amount of water sent to power plant
+
+             LOWER          LEVEL          UPPER         MARGINAL
+
+mar.a          .           150.0000        +INF             .          
+mar.b          .            90.0000        +INF             .          
+apr.a          .           150.0000        +INF             .          
+apr.b          .            15.0000        +INF             .          
+
+---- VAR power  power generated per plant each month
+
+             LOWER          LEVEL          UPPER         MARGINAL
+
+mar.a          .         60000.0000     60000.0000         3.5000      
+mar.b          .         18000.0000     35000.0000          .          
+apr.a          .         60000.0000     60000.0000         3.5000      
+apr.b          .          3000.0000     35000.0000          .          
+
+---- VAR genPower  type of power generated each month
+
+                  LOWER          LEVEL          UPPER         MARGINAL
+
+mar.normal          .         50000.0000        +INF             .          
+mar.excess          .         28000.0000        +INF             .          
+apr.normal          .         50000.0000        +INF             .          
+apr.excess          .         13000.0000        +INF             .          
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:25:47 Page 7
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----    112 VARIABLE profit.L              =   643500.000  
+
+----    112 VARIABLE resLev.L  level in reservoir at end of month
+
+              a           b
+
+mar    1220.000     800.000
+apr    1200.000     800.000
+
+
+----    112 VARIABLE spill.L  amount of water spilt out of reservoir
+
+              a
+
+mar     730.000
+
+
+----    112 VARIABLE water.L  amount of water sent to power plant
+
+              a           b
+
+mar     150.000      90.000
+apr     150.000      15.000
+
+
+----    112 VARIABLE power.L  power generated per plant each month
+
+              a           b
+
+mar   60000.000   18000.000
+apr   60000.000    3000.000
+
+
+----    112 VARIABLE genPower.L  type of power generated each month
+
+         normal      excess
+
+mar   50000.000   28000.000
+apr   50000.000   13000.000
+
+
+
+EXECUTION TIME       =        0.526 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework9/gams/hw9-2.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework9/output/hw9-2.lst

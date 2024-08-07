@@ -1,0 +1,439 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:07:48 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  option limrow=0, limcol=0, solprint=off;
+   2   
+   4  set i /1*5/;
+   5  alias (i,j);
+   6   
+   7  integer variables click(i,j);
+   8  variables totclicks;
+   9  integer variables cancels(i,j);
+  10  equations turnoff(i,j), cost;
+  11   
+  12  scalar initclicks "how many clicks to turn off from init state",
+  13         period "how many clicks to get back to same state";
+  14   
+  15  turnoff(i,j)..
+  16    initclicks + period*cancels(i,j) =e=
+  17    click(i,j) + click(i-1,j) + click(i+1,j) + click(i,j-1) + click(i,j+1);
+  18  cost..
+  19    totclicks =e= sum((i,j), click(i,j));
+  20   
+  21  model lightsout /all/;
+  22  lightsout.optcr = 0;
+  23  lightsout.optca = 0.999;
+  24  lightsout.reslim = 4000;
+  25  lightsout.iterlim = 1000000000;
+  26   
+  27  parameter soln(*,*);
+  28   
+  29  * Case (a): High state
+  30  period = 3;
+  31  cancels.up(i,j) = period;
+  32  click.up(i,j) = 1;
+  33  initclicks = 1;
+  34  solve lightsout using mip min totclicks;
+  35  option click:0:0:1; display click.l;
+  36  soln('high','totclicks') = totclicks.l;
+  37   
+  38  * Case (b): Medium state
+  39  period = 2;
+  40  cancels.up(i,j) = period;
+  41  click.up(i,j) = 1;
+  42  initclicks = 1;
+  43  solve lightsout using mip min totclicks;
+  44  option click:0:0:1; display click.l;
+  45  soln('medium','totclicks') = totclicks.l;
+  46   
+  47  * Case (c): Low state
+  48  period = 1;
+  49  cancels.up(i,j) = period;
+  50  click.up(i,j) = 1;
+  51  initclicks = 1;
+  52  solve lightsout using mip min totclicks;
+  53  option click:0:0:1; display click.l;
+  54  soln('low','totclicks') = totclicks.l;
+  55   
+  56  * Simple case
+  57  period = 2;
+  58  cancels.up(i,j) = period;
+  59  click.up(i,j) = 1;
+  60  initclicks = 1;
+  61  solve lightsout using mip min totclicks;
+  62  option click:0:0:1; display click.l;
+  63  soln('simple','totclicks') = totclicks.l;
+  64   
+  65  option soln:0:1:1; display soln;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:07:48 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE lightsout Using MIP From line 34
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
+Bound     [min, max] : [ 1.000E+00, 3.000E+00] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 3.000E+00]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:07:48 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE lightsout Using MIP From line 34
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           2     SINGLE EQUATIONS           26
+BLOCKS OF VARIABLES           3     SINGLE VARIABLES           51
+NON ZERO ELEMENTS           156     DISCRETE VARIABLES         50
+
+
+GENERATION TIME      =        0.104 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:07:48 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE lightsout Using MIP From line 34
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   lightsout           OBJECTIVE  totclicks
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  34
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      10 Integer Infeasible
+**** OBJECTIVE VALUE               NA
+
+ RESOURCE USAGE, LIMIT          0.178      4000.000
+ ITERATION COUNT, LIMIT         0    1000000000
+--- GAMS/CPLEX licensed for continuous and discrete problems.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.00 Mb (peak 0.01 Mb)
+--- Starting Cplex
+
+
+--- MIP status (103): integer infeasible.
+--- Cplex Time: 0.18sec (det. 0.38 ticks)
+
+--- Problem is integer infeasible
+
+No solution returned
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:07:48 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     35 VARIABLE click.L  
+
+                      ( ALL           0 )
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:07:48 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE lightsout Using MIP From line 43
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
+Bound     [min, max] : [ 1.000E+00, 2.000E+00] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 2.000E+00]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:07:48 Page 7
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE lightsout Using MIP From line 43
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           2     SINGLE EQUATIONS           26
+BLOCKS OF VARIABLES           3     SINGLE VARIABLES           51
+NON ZERO ELEMENTS           156     DISCRETE VARIABLES         50
+
+
+GENERATION TIME      =        0.003 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:07:48 Page 8
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE lightsout Using MIP From line 43
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   lightsout           OBJECTIVE  totclicks
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  43
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE               15.0000
+
+ RESOURCE USAGE, LIMIT          0.087      4000.000
+ ITERATION COUNT, LIMIT       194    1000000000
+--- GAMS/CPLEX licensed for continuous and discrete problems.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.00 Mb (peak 0.01 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.09sec (det. 9.72 ticks)
+
+--- Returning a primal only solution to GAMS (marginals all set to NA).
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.03 ticks)
+
+
+Proven optimal solution
+MIP Solution:           15.000000    (194 iterations, 0 nodes)
+Final Solve:            15.000000    (0 iterations)
+
+Best possible:          15.000000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:07:48 Page 9
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     44 VARIABLE click.L  
+
+1.4 1
+1.5 1
+2.1 1
+2.2 1
+2.4 1
+2.5 1
+3.1 1
+3.2 1
+3.3 1
+4.2 1
+4.3 1
+4.4 1
+5.1 1
+5.3 1
+5.4 1
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:07:48 Page 10
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE lightsout Using MIP From line 52
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
+Bound     [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 1.000E+00]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:07:48 Page 11
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE lightsout Using MIP From line 52
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           2     SINGLE EQUATIONS           26
+BLOCKS OF VARIABLES           3     SINGLE VARIABLES           51  2 projected
+NON ZERO ELEMENTS           156     DISCRETE VARIABLES         50
+
+
+GENERATION TIME      =        0.002 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:07:48 Page 12
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE lightsout Using MIP From line 52
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   lightsout           OBJECTIVE  totclicks
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  52
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE                7.0000
+
+ RESOURCE USAGE, LIMIT          0.023      4000.000
+ ITERATION COUNT, LIMIT        46    1000000000
+--- GAMS/CPLEX licensed for continuous and discrete problems.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.00 Mb (peak 0.01 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.02sec (det. 1.83 ticks)
+
+--- Returning a primal only solution to GAMS (marginals all set to NA).
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.03 ticks)
+
+
+Proven optimal solution
+MIP Solution:            7.000000    (46 iterations, 0 nodes)
+Final Solve:             7.000000    (0 iterations)
+
+Best possible:           7.000000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:07:48 Page 13
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     53 VARIABLE click.L  
+
+1.3 1
+2.1 1
+2.5 1
+3.3 1
+4.3 1
+5.1 1
+5.5 1
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:07:48 Page 14
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE lightsout Using MIP From line 61
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
+Bound     [min, max] : [ 1.000E+00, 2.000E+00] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 2.000E+00]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:07:48 Page 15
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE lightsout Using MIP From line 61
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           2     SINGLE EQUATIONS           26
+BLOCKS OF VARIABLES           3     SINGLE VARIABLES           51
+NON ZERO ELEMENTS           156     DISCRETE VARIABLES         50
+
+
+GENERATION TIME      =        0.001 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:07:48 Page 16
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE lightsout Using MIP From line 61
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   lightsout           OBJECTIVE  totclicks
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  61
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE               15.0000
+
+ RESOURCE USAGE, LIMIT          0.056      4000.000
+ ITERATION COUNT, LIMIT       194    1000000000
+--- GAMS/CPLEX licensed for continuous and discrete problems.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.00 Mb (peak 0.01 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.06sec (det. 9.72 ticks)
+
+--- Returning a primal only solution to GAMS (marginals all set to NA).
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.03 ticks)
+
+
+Proven optimal solution
+MIP Solution:           15.000000    (194 iterations, 0 nodes)
+Final Solve:            15.000000    (0 iterations)
+
+Best possible:          15.000000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/06/24 20:07:48 Page 17
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     62 VARIABLE click.L  
+
+1.4 1
+1.5 1
+2.1 1
+2.2 1
+2.4 1
+2.5 1
+3.1 1
+3.2 1
+3.3 1
+4.2 1
+4.3 1
+4.4 1
+5.1 1
+5.3 1
+5.4 1
+
+
+----     65 PARAMETER soln  
+
+         totclicks
+
+medium          15
+low              7
+simple          15
+
+
+
+EXECUTION TIME       =        1.320 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework9/gams/hw9-1.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework9/output/hw9-1.lst
