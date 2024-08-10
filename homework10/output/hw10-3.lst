@@ -1,0 +1,110 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:13:44 Page 1
+Einstein's Riddle
+C o m p i l a t i o n
+
+
+
+
+COMPILATION TIME     =        0.002 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:13:44 Page 2
+Einstein's Riddle
+Range Statistics    SOLVE einstein Using MIP From line 78
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
+Bound     [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 1.000E+00]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:13:44 Page 3
+Einstein's Riddle
+Model Statistics    SOLVE einstein Using MIP From line 78
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS          22     SINGLE EQUATIONS           62
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES       15,626
+NON ZERO ELEMENTS       163,751     DISCRETE VARIABLES     15,625
+
+
+GENERATION TIME      =        0.120 SECONDS     13 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:13:44 Page 4
+Einstein's Riddle
+Solution Report     SOLVE einstein Using MIP From line 78
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   einstein            OBJECTIVE  z
+     TYPE    MIP                 DIRECTION  MAXIMIZE
+     SOLVER  CPLEX               FROM LINE  78
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE                1.0000
+
+ RESOURCE USAGE, LIMIT          0.105 10000000000.000
+ ITERATION COUNT, LIMIT         0    2147483647
+--- GAMS/CPLEX licensed for continuous and discrete problems.
+--- GMO setup time: 0.00s
+--- Space for names approximately 0.70 Mb
+--- Use option 'names no' to turn use of names off
+--- GMO memory 9.35 Mb (peak 9.47 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.30 Mb (peak 3.18 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.07sec (det. 42.10 ticks)
+
+--- Returning a primal only solution to GAMS (marginals all set to NA).
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.03sec (det. 13.93 ticks)
+
+
+Proven optimal solution
+MIP Solution:            1.000000    (0 iterations, 0 nodes)
+Final Solve:             1.000000    (0 iterations)
+
+Best possible:           1.000000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:13:44 Page 5
+Einstein's Riddle
+E x e c u t i o n
+
+
+----     80 VARIABLE who.L  
+
+h1.yellow.norwegian.water .dunhill   .cat   1
+h2.blue  .swede    .beer  .bluemaster.dog   1
+h3.red   .brit     .milk  .pallmall  .bird  1
+h4.green .german   .coffee.prince    .fish  1
+h5.white .dane     .tea   .blends    .horse 1
+
+
+
+EXECUTION TIME       =        0.338 SECONDS     13 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework10/gams/hw10-3.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework10/output/hw10-3.lst

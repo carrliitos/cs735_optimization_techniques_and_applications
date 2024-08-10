@@ -1,0 +1,103 @@
+--- Job hw10-3.gms Start 08/09/24 20:13:44 47.2.0 54a8429d LEX-LEG x86 64bit/Linux
+--- Applying:
+    /opt/gams/gams47.2_linux_x64_64_sfx/gmsprmun.txt
+--- GAMS Parameters defined
+    Input /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework10/gams/hw10-3.gms
+    Output /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework10/output/hw10-3.lst
+    ScrDir /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework10/225a/
+    SysDir /opt/gams/gams47.2_linux_x64_64_sfx/
+Licensee: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+          COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+          /opt/gams/gams47.2_linux_x64_64_sfx/gamslice.txt
+          License Admin: Athula Gunawardena, gunawara@uww.edu              
+          Course license for use within the course and related course work
+          The evaluation period of the license will expire on Aug 15, 2024
+Processor information: 1 socket(s), 2 core(s), and 4 thread(s) available
+GAMS 47.2.0   Copyright (C) 1987-2024 GAMS Development. All rights reserved
+--- Starting compilation
+--- hw10-3.gms(80) 3 Mb
+--- Starting execution: elapsed 0:00:00.022
+--- hw10-3.gms(76) 4 Mb
+--- Generating MIP model einstein
+--- hw10-3.gms(78) 13 Mb
+---   62 rows  15,626 columns  163,751 non-zeroes
+---   15,625 discrete-columns
+--- Range statistics (absolute non-zero finite values)
+--- RHS       [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
+--- Bound     [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
+--- Matrix    [min, max] : [ 1.000E+00, 1.000E+00]
+--- Executing CPLEX (Solvelink=2): elapsed 0:00:00.142
+
+IBM ILOG CPLEX   47.2.0 54a8429d Jul 1, 2024           LEG x86 64bit/Linux    
+
+--- GAMS/CPLEX licensed for continuous and discrete problems.
+--- GMO setup time: 0.00s
+--- Space for names approximately 0.70 Mb
+--- Use option 'names no' to turn use of names off
+--- GMO memory 9.35 Mb (peak 9.47 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.30 Mb (peak 3.18 Mb)
+--- Starting Cplex
+
+Version identifier: 22.1.1.0 | 2022-11-28 | 9160aff4d
+CPXPARAM_Advance                                 0
+CPXPARAM_MIP_Display                             4
+CPXPARAM_MIP_Pool_Capacity                       0
+CPXPARAM_MIP_Tolerances_AbsMIPGap                0
+Generic callback                                 0x50
+Tried aggregator 1 time.
+MIP Presolve eliminated 40 rows and 15493 columns.
+MIP Presolve modified 12500 coefficients.
+Reduced MIP has 21 rows, 133 columns, and 599 nonzeros.
+Reduced MIP has 133 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.06 sec. (35.34 ticks)
+Found incumbent of value 1.000000 after 0.07 sec. (41.82 ticks)
+
+Root node processing (before b&c):
+  Real time             =    0.07 sec. (42.05 ticks)
+Parallel b&c, 4 threads:
+  Real time             =    0.00 sec. (0.00 ticks)
+  Sync time (average)   =    0.00 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =    0.07 sec. (42.05 ticks)
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.07sec (det. 42.10 ticks)
+
+--- Returning a primal only solution to GAMS (marginals all set to NA).
+--- Fixing integer variables and solving final LP...
+
+Version identifier: 22.1.1.0 | 2022-11-28 | 9160aff4d
+CPXPARAM_Advance                                 2
+CPXPARAM_MIP_Display                             4
+CPXPARAM_MIP_Pool_Capacity                       0
+CPXPARAM_MIP_Tolerances_AbsMIPGap                0
+Parallel mode: deterministic, using up to 4 threads for concurrent optimization:
+ * Starting dual Simplex on 1 thread...
+ * Starting Barrier on 3 threads...
+Tried aggregator 1 time.
+LP Presolve eliminated 61 rows and 15626 columns.
+All rows and columns eliminated.
+Presolve time = 0.01 sec. (10.72 ticks)
+
+Dual simplex solved model.
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.03sec (det. 13.93 ticks)
+
+
+Proven optimal solution
+MIP Solution:            1.000000    (0 iterations, 0 nodes)
+Final Solve:             1.000000    (0 iterations)
+
+Best possible:           1.000000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+--- Reading solution for model einstein
+--- Executing after solve: elapsed 0:00:00.358
+--- hw10-3.gms(80) 13 Mb
+*** Status: Normal completion
+--- Job hw10-3.gms Stop 08/09/24 20:13:44 elapsed 0:00:00.360

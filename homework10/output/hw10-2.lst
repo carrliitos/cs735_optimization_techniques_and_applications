@@ -1,0 +1,289 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:10:21 Page 1
+Advertising
+C o m p i l a t i o n
+
+
+   2   
+   3  sets
+   4    N /ad1*ad20/
+   5  ;
+   6   
+   7  alias(I,N) ;
+   8   
+   9  parameters
+  10    c(I) Cost
+  11    alpha(I) Witches proportionality constant
+  12    beta(I) Wizards proportionality constant
+  13  ;
+  14   
+  15  scalars K1, K2 ;
+  16   
+  17  c(I) = normal(100,5) ;
+  18   
+  19  alpha(I) = uniform(7,13) ;
+  20  beta(I) = 13-alpha(I) + 7 + 5$(uniform(0,1) < 0.3) ;
+  21   
+  22  K1 = 5000;
+  23  K2 = 8000;
+  24   
+  25  equations
+  26    obj_eq,
+  27    witches_eq,
+  28    wizards_eq
+  29  ;
+  30   
+  31  positive variables x(I);
+  32  free variable cost ;
+  33   
+  34  * Objective: Minimize the total cost
+  35  obj_eq.. cost =e= sum(I, c(I)*x(I));
+  36   
+  37  * Constraint: Reach at least K1 witches
+  38  witches_eq.. sum(I, alpha(I)*sqrt(x(I))) =g= K1;
+  39   
+  40  * Constraint: Reach at least K2 wizards
+  41  wizards_eq.. sum(I, beta(I)*sqrt(x(I))) =g= K2;
+  42   
+  43  option nlp = knitro;
+  44  model w1 /all/;
+  45   
+  46  solve w1 using nlp minimizing cost ;
+  47   
+  48  * Display the solution for minutes of advertising per ad
+  49  display x.L;
+  50   
+  51  * Calculate and display the total advertising time
+  52  parameter totalAdTime;
+  53  totalAdTime = sum(I, x.L(I));
+  54  display totalAdTime;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:10:21 Page 2
+Advertising
+Equation Listing    SOLVE w1 Using NLP From line 46
+
+
+---- obj_eq  =E=  
+
+obj_eq..  - 98.4332853570572*x(ad1) - 101.638374041132*x(ad2) - 102.317793911814*x(ad3) - 90.8502610800552*x(ad4) - 96.3419379318221*x(ad5) - 95.1420086413329*x(ad6) - 98.0303677984163*x(ad7) - 104.672863441725*x(ad8) - 96.2035162046639*x(ad9) - 100.001847601754*x(ad10) - 95.455421629114*x(ad11) - 101.719333674322*x(ad12) - 96.6884278227715*x(ad13) - 97.5692517581452*x(ad14) - 109.417676368582*x(ad15) - 96.3961540520591*x(ad16) - 93.5049674334345*x(ad17) - 93.1226302048127*x(ad18) - 101.598399851103*x(ad19) - 105.935106702865*x(ad20) + cost =E= 0 ; (LHS = 0)
+     
+
+---- witches_eq  =G=  
+
+witches_eq..  (83848944280)*x(ad1) + (109944067600)*x(ad2) + (116551456360)*x(ad3) + (88219508620)*x(ad4) + (76629537460)*x(ad5) + (100143091960)*x(ad6) + (79610365720)*x(ad7) + (122347738660)*x(ad8) + (85906872700)*x(ad9) + (87148859320)*x(ad10) + (105637355320)*x(ad11) + (113363144260)*x(ad12) + (107694920620)*x(ad13) + (97827871900)*x(ad14) + (94798419640)*x(ad15) + (77061721420)*x(ad16) + (88852736020)*x(ad17) + (72793090840)*x(ad18) + (90313016320)*x(ad19) + (80925975580)*x(ad20) =G= 5000 ; (LHS = 0, INFES = 5000 ****)
+     
+
+---- wizards_eq  =G=  
+
+wizards_eq..  (116151055720)*x(ad1) + (90055932400)*x(ad2) + (83448543640)*x(ad3) + (161780491380)*x(ad4) + (123370462540)*x(ad5) + (99856908040)*x(ad6) + (120389634280)*x(ad7) + (127652261340)*x(ad8) + (164093127300)*x(ad9) + (162851140680)*x(ad10) + (94362644680)*x(ad11) + (86636855740)*x(ad12) + (142305079380)*x(ad13) + (102172128100)*x(ad14) + (155201580360)*x(ad15) + (172938278580)*x(ad16) + (111147263980)*x(ad17) + (127206909160)*x(ad18) + (159686983680)*x(ad19) + (169074024420)*x(ad20) =G= 8000 ; (LHS = 0, INFES = 8000 ****)
+     
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:10:21 Page 3
+Advertising
+Column Listing      SOLVE w1 Using NLP From line 46
+
+
+---- x  
+
+x(ad1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+      -98.4333  obj_eq
+ (8.384894E+10) witches_eq
+ (1.161511E+11) wizards_eq
+
+x(ad2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     -101.6384  obj_eq
+ (1.099441E+11) witches_eq
+ (9.005593E+10) wizards_eq
+
+x(ad3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     -102.3178  obj_eq
+ (1.165515E+11) witches_eq
+ (8.344854E+10) wizards_eq
+
+REMAINING 17 ENTRIES SKIPPED
+
+---- cost  
+
+cost
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       obj_eq
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:10:21 Page 4
+Advertising
+Range Statistics    SOLVE w1 Using NLP From line 46
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 5.000E+03, 8.000E+03] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 1.729E+11]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:10:21 Page 5
+Advertising
+Model Statistics    SOLVE w1 Using NLP From line 46
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           3     SINGLE EQUATIONS            3
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES           21
+NON ZERO ELEMENTS            61     NON LINEAR N-Z             40
+CODE LENGTH                 125     CONSTANT POOL              56
+
+
+GENERATION TIME      =        0.039 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:10:21 Page 6
+Advertising
+Solution Report     SOLVE w1 Using NLP From line 46
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   w1                  OBJECTIVE  cost
+     TYPE    NLP                 DIRECTION  MINIMIZE
+     SOLVER  KNITRO              FROM LINE  46
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      2 Locally Optimal
+**** OBJECTIVE VALUE          1815587.7245
+
+ RESOURCE USAGE, LIMIT          0.227 10000000000.000
+ ITERATION COUNT, LIMIT         9    2147483647
+ EVALUATION ERRORS              0             0
+--- *** This solver runs with a community license.
+--- Artelys Knitro Optimizer 14.0.0
+--- GMO Q Extraction (ThreePass): 0.00s
+--- GMO setup time: 0.00s
+--- Set initial levels for 0 / 20 variables.
+--- Set initial marginals for 0 / 20 variables.
+--- Set initial marginals for 0 / 2 equations.
+
+=======================================
+          Commercial License
+         Artelys Knitro 14.0.0
+=======================================
+
+No start point provided -- Knitro computing one.
+
+Knitro presolve eliminated 0 variables and 0 constraints.
+
+concurrent_evals:        0
+datacheck:               0
+hessian_no_f:            1
+
+Problem Characteristics                                 (   Presolved)
+-----------------------
+Objective goal:  Minimize
+Objective type:  linear
+Number of variables:                                 20 (          20)
+    bounded below only:                              20 (          20)
+    bounded above only:                               0 (           0)
+    bounded below and above:                          0 (           0)
+    fixed:                                            0 (           0)
+    free:                                             0 (           0)
+Number of constraints:                                2 (           2)
+    linear equalities:                                0 (           0)
+    quadratic equalities:                             0 (           0)
+    gen. nonlinear equalities:                        0 (           0)
+    linear one-sided inequalities:                    0 (           0)
+    quadratic one-sided inequalities:                 0 (           0)
+    gen. nonlinear one-sided inequalities:            2 (           2)
+    linear two-sided inequalities:                    0 (           0)
+    quadratic two-sided inequalities:                 0 (           0)
+    gen. nonlinear two-sided inequalities:            0 (           0)
+Number of nonzeros in Jacobian:                      40 (          40)
+Number of nonzeros in Hessian:                       20 (          20)
+
+
+  Iter      Objective      FeasError   OptError    ||Step||    CGits 
+--------  --------------  ----------  ----------  ----------  -------
+       0    3.230849e+03   7.673e+03
+       9    1.815588e+06   3.965e-10   5.456e-08   1.505e-03        0
+
+EXIT: Locally optimal solution found.
+
+Final Statistics
+----------------
+Final objective value               =   1.81558772450955e+06
+Final feasibility error (abs / rel) =   3.97e-10 / 5.17e-14
+Final optimality error  (abs / rel) =   5.46e-08 / 5.46e-10
+# of iterations                     =          9 
+# of CG iterations                  =          0 
+# of function evaluations           =         11
+# of gradient evaluations           =         11
+# of Hessian evaluations            =          9
+Total program time (secs)           =       0.22630 (     0.018 CPU time)
+Time spent in evaluations (secs)    =       0.00076
+
+===============================================================================
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU obj_eq              .              .              .             1.0000      
+---- EQU witches_eq      5000.0000      5442.1740        +INF      1.642419E-11      
+---- EQU wizards_eq      8000.0000      8000.0000        +INF          453.8969      
+
+---- VAR x  
+
+            LOWER          LEVEL          UPPER         MARGINAL
+
+ad1           .           717.1613        +INF      7.591527E-11      
+ad2           .           404.3559        +INF      1.388290E-10      
+ad3           .           342.6018        +INF      1.648283E-10      
+ad4           .          1633.2567        +INF      3.083915E-11      
+ad5           .           844.5904        +INF      6.314921E-11      
+ad6           .           567.3696        +INF      9.277287E-11      
+ad7           .           776.8040        +INF      6.983700E-11      
+ad8           .           766.0257        +INF      7.555021E-11      
+ad9           .          1498.4884        +INF      3.555854E-11      
+ad10          .          1365.9036        +INF      4.052543E-11      
+ad11          .           503.3308        +INF      1.049106E-10      
+ad12          .           373.6396        +INF      1.495846E-10      
+ad13          .          1115.6971        +INF      4.798841E-11      
+ad14          .           564.7984        +INF      9.552765E-11      
+ad15          .          1036.2673        +INF      5.836596E-11      
+ad16          .          1657.7436        +INF      3.220778E-11      
+ad17          .           727.7508        +INF      7.114263E-11      
+ad18          .           961.0930        +INF      5.367574E-11      
+ad19          .          1272.3887        +INF      4.418732E-11      
+ad20          .          1311.9838        +INF      4.465551E-11      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR cost              -INF      1815587.7245        +INF             .          
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+                             0     ERRORS
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:10:21 Page 7
+Advertising
+E x e c u t i o n
+
+
+----     49 VARIABLE x.L  
+
+ad1   717.161,    ad2   404.356,    ad3   342.602,    ad4  1633.257,    ad5   844.590,    ad6   567.370,    ad7   776.804,    ad8   766.026,    ad9  1498.488,    ad10 1365.904,    ad11  503.331,    ad12  373.640,    ad13 1115.697,    ad14  564.798,    ad15 1036.267,    ad16 1657.744,    ad17  727.751,    ad18  961.093,    ad19 1272.389,    ad20 1311.984
+
+
+----     54 PARAMETER totalAdTime          =    18441.250  
+
+
+EXECUTION TIME       =        0.811 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework10/gams/hw10-2.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework10/output/hw10-2.lst

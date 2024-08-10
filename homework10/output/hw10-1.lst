@@ -1,0 +1,791 @@
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  * Problem 1-1: Absolute Difference
+   2  Sets
+   3      i /1*7/
+   4      j /1*4/;
+   5   
+   6  Parameters
+   7      a(i,j) /
+   8      1.1 8, 1.2 -2, 1.3 4, 1.4 -9,
+   9      2.1 1, 2.2 6, 2.3 -1, 2.4 -5,
+  10      3.1 1, 3.2 -1, 3.3 1, 3.4 0,
+  11      4.1 1, 4.2 2, 4.3 -7, 4.4 4,
+  12      5.3 1, 5.4 -1,
+  13      6.1 1, 6.3 1, 6.4 -1,
+  14      7.1 5, 7.2 2, 7.3 -7, 7.4 4/;
+  15   
+  16  Parameters
+  17      b(i) /
+  18      1 17,
+  19      2 -16,
+  20      3 7,
+  21      4 -15,
+  22      5 6,
+  23      6 0,
+  24      7 12/;
+  25   
+  26  Variables
+  27      x(j) 'decision variables for Problem 1-1'
+  28      e_pos(i) 'positive error variables for Problem 1-1'
+  29      e_neg(i) 'negative error variables for Problem 1-1'
+  30      z 'objective function for Problem 1-1';
+  31   
+  32  Positive Variables x, e_pos, e_neg;
+  33   
+  34  Equations
+  35      obj 'objective function for Problem 1-1'
+  36      constr_pos(i) 'positive constraints for Problem 1-1'
+  37      constr_neg(i) 'negative constraints for Problem 1-1';
+  38   
+  39  * Objective function: Minimize the sum of positive and negative error variables
+  40  obj.. z =e= sum(i, e_pos(i) + e_neg(i));
+  41   
+  42  * Constraints: Absolute value condition reformulated
+  43  constr_pos(i).. sum(j, a(i,j)*x(j)) - b(i) =l= e_pos(i);
+  44  constr_neg(i).. sum(j, a(i,j)*x(j)) - b(i) =g= -e_neg(i);
+  45   
+  46  Model abs_diff /all/;
+  47  Solve abs_diff using lp minimizing z;
+  48   
+  49  Display x.l, e_pos.l, e_neg.l, z.l;
+  50   
+  51  * Problem 1-2: Absolute Value Minimization (Hypothetical Example)
+  52  Sets
+  53      k /1*5/;
+  54   
+  55  Parameters
+  56      c(k) /
+  57      1 5,
+  58      2 -8,
+  59      3 3,
+  60      4 2,
+  61      5 -4/;
+  62   
+  63  Variables
+  64      y(k) 'decision variables for Problem 1-2'
+  65      e2_pos(k) 'positive error variables for Problem 1-2'
+  66      e2_neg(k) 'negative error variables for Problem 1-2'
+  67      z2 'objective function for Problem 1-2';
+  68   
+  69  Positive Variables y, e2_pos, e2_neg;
+  70   
+  71  Equations
+  72      obj2 'objective function for Problem 1-2'
+  73      constr2_pos(k) 'positive constraints for Problem 1-2'
+  74      constr2_neg(k) 'negative constraints for Problem 1-2';
+  75   
+  76  * Objective function: Minimize the sum of positive and negative error variables
+  77  obj2.. z2 =e= sum(k, e2_pos(k) + e2_neg(k));
+  78   
+  79  * Constraints: Absolute value condition reformulated
+  80  constr2_pos(k).. y(k) - c(k) =l= e2_pos(k);
+  81  constr2_neg(k).. y(k) - c(k) =g= -e2_neg(k);
+  82   
+  83  Model abs_value_min /all/;
+  84  Solve abs_value_min using lp minimizing z2;
+  85   
+  86  Display y.l, e2_pos.l, e2_neg.l, z2.l;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE abs_diff Using LP From line 47
+
+
+---- obj  =E=  objective function for Problem 1-1
+
+obj..  - e_pos(1) - e_pos(2) - e_pos(3) - e_pos(4) - e_pos(5) - e_pos(6) - e_pos(7) - e_neg(1) - e_neg(2) - e_neg(3) - e_neg(4) - e_neg(5) - e_neg(6) - e_neg(7) + z =E= 0 ; (LHS = 0)
+     
+
+---- constr_pos  =L=  positive constraints for Problem 1-1
+
+constr_pos(1)..  8*x(1) - 2*x(2) + 4*x(3) - 9*x(4) - e_pos(1) =L= 17 ; (LHS = 0)
+     
+constr_pos(2)..  x(1) + 6*x(2) - x(3) - 5*x(4) - e_pos(2) =L= -16 ; (LHS = 0, INFES = 16 ****)
+     
+constr_pos(3)..  x(1) - x(2) + x(3) - e_pos(3) =L= 7 ; (LHS = 0)
+     
+REMAINING 4 ENTRIES SKIPPED
+
+
+---- constr_neg  =G=  negative constraints for Problem 1-1
+
+constr_neg(1)..  8*x(1) - 2*x(2) + 4*x(3) - 9*x(4) + e_neg(1) =G= 17 ; (LHS = 0, INFES = 17 ****)
+     
+constr_neg(2)..  x(1) + 6*x(2) - x(3) - 5*x(4) + e_neg(2) =G= -16 ; (LHS = 0)
+     
+constr_neg(3)..  x(1) - x(2) + x(3) + e_neg(3) =G= 7 ; (LHS = 0, INFES = 7 ****)
+     
+REMAINING 4 ENTRIES SKIPPED
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE abs_diff Using LP From line 47
+
+
+---- x  decision variables for Problem 1-1
+
+x(1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        8       constr_pos(1)
+        1       constr_pos(2)
+        1       constr_pos(3)
+        1       constr_pos(4)
+        1       constr_pos(6)
+        5       constr_pos(7)
+        8       constr_neg(1)
+        1       constr_neg(2)
+        1       constr_neg(3)
+        1       constr_neg(4)
+        1       constr_neg(6)
+        5       constr_neg(7)
+
+x(2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -2       constr_pos(1)
+        6       constr_pos(2)
+       -1       constr_pos(3)
+        2       constr_pos(4)
+        2       constr_pos(7)
+       -2       constr_neg(1)
+        6       constr_neg(2)
+       -1       constr_neg(3)
+        2       constr_neg(4)
+        2       constr_neg(7)
+
+x(3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        4       constr_pos(1)
+       -1       constr_pos(2)
+        1       constr_pos(3)
+       -7       constr_pos(4)
+        1       constr_pos(5)
+        1       constr_pos(6)
+       -7       constr_pos(7)
+        4       constr_neg(1)
+       -1       constr_neg(2)
+        1       constr_neg(3)
+       -7       constr_neg(4)
+        1       constr_neg(5)
+        1       constr_neg(6)
+       -7       constr_neg(7)
+
+REMAINING ENTRY SKIPPED
+
+---- e_pos  positive error variables for Problem 1-1
+
+e_pos(1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       obj
+       -1       constr_pos(1)
+
+e_pos(2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       obj
+       -1       constr_pos(2)
+
+e_pos(3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       obj
+       -1       constr_pos(3)
+
+REMAINING 4 ENTRIES SKIPPED
+
+---- e_neg  negative error variables for Problem 1-1
+
+e_neg(1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       obj
+        1       constr_neg(1)
+
+e_neg(2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       obj
+        1       constr_neg(2)
+
+e_neg(3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       obj
+        1       constr_neg(3)
+
+REMAINING 4 ENTRIES SKIPPED
+
+---- z  objective function for Problem 1-1
+
+z
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       obj
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE abs_diff Using LP From line 47
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 6.000E+00, 1.700E+01] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 9.000E+00]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE abs_diff Using LP From line 47
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           3     SINGLE EQUATIONS           15
+BLOCKS OF VARIABLES           4     SINGLE VARIABLES           19
+NON ZERO ELEMENTS            77
+
+
+GENERATION TIME      =        0.003 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE abs_diff Using LP From line 47
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   abs_diff            OBJECTIVE  z
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  COPT                FROM LINE  47
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE               17.1954
+
+ RESOURCE USAGE, LIMIT          0.020 10000000000.000
+ ITERATION COUNT, LIMIT         4    2147483647
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU obj                 .              .              .             1.0000      
+
+  obj  objective function for Problem 1-1
+
+---- EQU constr_pos  positive constraints for Problem 1-1
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1        -INF           17.0000        17.0000        -0.9834      
+2        -INF          -16.0000       -16.0000        -1.0000      
+3        -INF            7.0000         7.0000        -1.0000      
+4        -INF          -15.0000       -15.0000        -1.0000      
+5        -INF            1.0844         6.0000          .          
+6        -INF             .              .            -1.0000      
+7        -INF           12.0000        12.0000        -0.4735      
+
+---- EQU constr_neg  negative constraints for Problem 1-1
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1        17.0000        17.0000        +INF            1.0000      
+2       -16.0000       -16.0000        +INF            0.8775      
+3         7.0000        11.4454        +INF             .          
+4       -15.0000       -15.0000        +INF            0.3576      
+5         6.0000         6.0000        +INF            1.0000      
+6          .             7.8344        +INF             .          
+7        12.0000        12.0000        +INF            1.0000      
+
+---- VAR x  decision variables for Problem 1-1
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .             6.7500        +INF             .          
+2          .             3.3262        +INF             .          
+3          .             8.0215        +INF             .          
+4          .             6.9371        +INF             .          
+
+---- VAR e_pos  positive error variables for Problem 1-1
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .              .            +INF            0.0166      
+2          .              .            +INF             .          
+3          .             4.4454        +INF             .          
+4          .              .            +INF             .          
+5          .              .            +INF            1.0000      
+6          .             7.8344        +INF             .          
+7          .              .            +INF            0.5265      
+
+---- VAR e_neg  negative error variables for Problem 1-1
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .              .            +INF             .          
+2          .              .            +INF            0.1225      
+3          .              .            +INF            1.0000      
+4          .              .            +INF            0.6424      
+5          .             4.9156        +INF             .          
+6          .              .            +INF            1.0000      
+7          .       -3.55271E-15        +INF             .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR z                 -INF           17.1954        +INF             .          
+
+  z  objective function for Problem 1-1
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 7
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     49 VARIABLE x.L  decision variables for Problem 1-1
+
+1 6.750,    2 3.326,    3 8.022,    4 6.937
+
+
+----     49 VARIABLE e_pos.L  positive error variables for Problem 1-1
+
+3 4.445,    6 7.834
+
+
+----     49 VARIABLE e_neg.L  negative error variables for Problem 1-1
+
+5       4.916,    7 -3.5527E-15
+
+
+----     49 VARIABLE z.L                   =       17.195  objective function for Problem 1-1
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 8
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE abs_value_min Using LP From line 84
+
+
+---- obj  =E=  objective function for Problem 1-1
+
+obj..  - e_pos(1) - e_pos(2) - e_pos(3) - e_pos(4) - e_pos(5) - e_pos(6) - e_pos(7) - e_neg(1) - e_neg(2) - e_neg(3) - e_neg(4) - e_neg(5) - e_neg(6) - e_neg(7) + z =E= 0 ; (LHS = 0)
+     
+
+---- constr_pos  =L=  positive constraints for Problem 1-1
+
+constr_pos(1)..  8*x(1) - 2*x(2) + 4*x(3) - 9*x(4) - e_pos(1) =L= 17 ; (LHS = 17)
+     
+constr_pos(2)..  x(1) + 6*x(2) - x(3) - 5*x(4) - e_pos(2) =L= -16 ; (LHS = -16)
+     
+constr_pos(3)..  x(1) - x(2) + x(3) - e_pos(3) =L= 7 ; (LHS = 7)
+     
+REMAINING 4 ENTRIES SKIPPED
+
+
+---- constr_neg  =G=  negative constraints for Problem 1-1
+
+constr_neg(1)..  8*x(1) - 2*x(2) + 4*x(3) - 9*x(4) + e_neg(1) =G= 17 ; (LHS = 17)
+     
+constr_neg(2)..  x(1) + 6*x(2) - x(3) - 5*x(4) + e_neg(2) =G= -16 ; (LHS = -16)
+     
+constr_neg(3)..  x(1) - x(2) + x(3) + e_neg(3) =G= 7 ; (LHS = 11.4453642384106)
+     
+REMAINING 4 ENTRIES SKIPPED
+
+
+---- obj2  =E=  objective function for Problem 1-2
+
+obj2..  - e2_pos(1) - e2_pos(2) - e2_pos(3) - e2_pos(4) - e2_pos(5) - e2_neg(1) - e2_neg(2) - e2_neg(3) - e2_neg(4) - e2_neg(5) + z2 =E= 0 ; (LHS = 0)
+     
+
+---- constr2_pos  =L=  positive constraints for Problem 1-2
+
+constr2_pos(1)..  y(1) - e2_pos(1) =L= 5 ; (LHS = 0)
+     
+constr2_pos(2)..  y(2) - e2_pos(2) =L= -8 ; (LHS = 0, INFES = 8 ****)
+     
+constr2_pos(3)..  y(3) - e2_pos(3) =L= 3 ; (LHS = 0)
+     
+REMAINING 2 ENTRIES SKIPPED
+
+
+---- constr2_neg  =G=  negative constraints for Problem 1-2
+
+constr2_neg(1)..  y(1) + e2_neg(1) =G= 5 ; (LHS = 0, INFES = 5 ****)
+     
+constr2_neg(2)..  y(2) + e2_neg(2) =G= -8 ; (LHS = 0)
+     
+constr2_neg(3)..  y(3) + e2_neg(3) =G= 3 ; (LHS = 0, INFES = 3 ****)
+     
+REMAINING 2 ENTRIES SKIPPED
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 9
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE abs_value_min Using LP From line 84
+
+
+---- x  decision variables for Problem 1-1
+
+x(1)
+                (.LO, .L, .UP, .M = 0, 6.75, +INF, 0)
+        8       constr_pos(1)
+        1       constr_pos(2)
+        1       constr_pos(3)
+        1       constr_pos(4)
+        1       constr_pos(6)
+        5       constr_pos(7)
+        8       constr_neg(1)
+        1       constr_neg(2)
+        1       constr_neg(3)
+        1       constr_neg(4)
+        1       constr_neg(6)
+        5       constr_neg(7)
+
+x(2)
+                (.LO, .L, .UP, .M = 0, 3.32615894039735, +INF, 0)
+       -2       constr_pos(1)
+        6       constr_pos(2)
+       -1       constr_pos(3)
+        2       constr_pos(4)
+        2       constr_pos(7)
+       -2       constr_neg(1)
+        6       constr_neg(2)
+       -1       constr_neg(3)
+        2       constr_neg(4)
+        2       constr_neg(7)
+
+x(3)
+                (.LO, .L, .UP, .M = 0, 8.02152317880795, +INF, 0)
+        4       constr_pos(1)
+       -1       constr_pos(2)
+        1       constr_pos(3)
+       -7       constr_pos(4)
+        1       constr_pos(5)
+        1       constr_pos(6)
+       -7       constr_pos(7)
+        4       constr_neg(1)
+       -1       constr_neg(2)
+        1       constr_neg(3)
+       -7       constr_neg(4)
+        1       constr_neg(5)
+        1       constr_neg(6)
+       -7       constr_neg(7)
+
+REMAINING ENTRY SKIPPED
+
+---- e_pos  positive error variables for Problem 1-1
+
+e_pos(1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0.0165562913907285)
+       -1       obj
+       -1       constr_pos(1)
+
+e_pos(2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       obj
+       -1       constr_pos(2)
+
+e_pos(3)
+                (.LO, .L, .UP, .M = 0, 4.44536423841059, +INF, 0)
+       -1       obj
+       -1       constr_pos(3)
+
+REMAINING 4 ENTRIES SKIPPED
+
+---- e_neg  negative error variables for Problem 1-1
+
+e_neg(1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       obj
+        1       constr_neg(1)
+
+e_neg(2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0.122516556291391)
+       -1       obj
+        1       constr_neg(2)
+
+e_neg(3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 1)
+       -1       obj
+        1       constr_neg(3)
+
+REMAINING 4 ENTRIES SKIPPED
+
+---- z  objective function for Problem 1-1
+
+z
+                (.LO, .L, .UP, .M = -INF, 17.1953642384106, +INF, 0)
+        1       obj
+
+
+---- y  decision variables for Problem 1-2
+
+y(1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       constr2_pos(1)
+        1       constr2_neg(1)
+
+y(2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       constr2_pos(2)
+        1       constr2_neg(2)
+
+y(3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       constr2_pos(3)
+        1       constr2_neg(3)
+
+REMAINING 2 ENTRIES SKIPPED
+
+---- e2_pos  positive error variables for Problem 1-2
+
+e2_pos(1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       obj2
+       -1       constr2_pos(1)
+
+e2_pos(2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       obj2
+       -1       constr2_pos(2)
+
+e2_pos(3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       obj2
+       -1       constr2_pos(3)
+
+REMAINING 2 ENTRIES SKIPPED
+
+---- e2_neg  negative error variables for Problem 1-2
+
+e2_neg(1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       obj2
+        1       constr2_neg(1)
+
+e2_neg(2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       obj2
+        1       constr2_neg(2)
+
+e2_neg(3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       obj2
+        1       constr2_neg(3)
+
+REMAINING 2 ENTRIES SKIPPED
+
+---- z2  objective function for Problem 1-2
+
+z2
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       obj2
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 10
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE abs_value_min Using LP From line 84
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 2.000E+00, 1.700E+01] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 9.000E+00]
+
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 11
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE abs_value_min Using LP From line 84
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           6     SINGLE EQUATIONS           26
+BLOCKS OF VARIABLES           8     SINGLE VARIABLES           35  1 projected
+NON ZERO ELEMENTS           108
+
+
+GENERATION TIME      =        0.002 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 12
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE abs_value_min Using LP From line 84
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   abs_value_min       OBJECTIVE  z2
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  COPT                FROM LINE  84
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE               12.0000
+
+ RESOURCE USAGE, LIMIT          0.001 10000000000.000
+ ITERATION COUNT, LIMIT         0    2147483647
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU obj                 .              .              .             EPS         
+
+  obj  objective function for Problem 1-1
+
+---- EQU constr_pos  positive constraints for Problem 1-1
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1        -INF             .            17.0000          .          
+2        -INF          -16.0000       -16.0000         EPS         
+3        -INF             .             7.0000          .          
+4        -INF          -15.0000       -15.0000         EPS         
+5        -INF             .             6.0000          .          
+6        -INF             .              .              .          
+7        -INF             .            12.0000          .          
+
+---- EQU constr_neg  negative constraints for Problem 1-1
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1        17.0000        17.0000        +INF            EPS         
+2       -16.0000          .            +INF             .          
+3         7.0000         7.0000        +INF            EPS         
+4       -15.0000          .            +INF             .          
+5         6.0000         6.0000        +INF            EPS         
+6          .              .            +INF             .          
+7        12.0000        12.0000        +INF            EPS         
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU obj2                .              .              .             1.0000      
+
+  obj2  objective function for Problem 1-2
+
+---- EQU constr2_pos  positive constraints for Problem 1-2
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1        -INF            5.0000         5.0000         EPS         
+2        -INF           -8.0000        -8.0000        -1.0000      
+3        -INF            3.0000         3.0000         EPS         
+4        -INF            2.0000         2.0000         EPS         
+5        -INF           -4.0000        -4.0000        -1.0000      
+
+---- EQU constr2_neg  negative constraints for Problem 1-2
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1         5.0000         5.0000        +INF             .          
+2        -8.0000          .            +INF             .          
+3         3.0000         3.0000        +INF             .          
+4         2.0000         2.0000        +INF             .          
+5        -4.0000          .            +INF             .          
+
+---- VAR x  decision variables for Problem 1-1
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .              .            +INF            EPS         
+2          .              .            +INF            EPS         
+3          .              .            +INF            EPS         
+4          .              .            +INF            EPS         
+
+---- VAR e_pos  positive error variables for Problem 1-1
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .              .            +INF            EPS         
+2          .            16.0000        +INF             .          
+3          .              .            +INF            EPS         
+4          .            15.0000        +INF             .          
+5          .              .            +INF            EPS         
+6          .              .            +INF            EPS         
+7          .              .            +INF            EPS         
+
+---- VAR e_neg  negative error variables for Problem 1-1
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .            17.0000        +INF             .          
+2          .              .            +INF            EPS         
+3          .             7.0000        +INF             .          
+4          .              .            +INF            EPS         
+5          .             6.0000        +INF             .          
+6          .              .            +INF            EPS         
+7          .            12.0000        +INF             .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR z                 -INF           73.0000        +INF             .          
+
+  z  objective function for Problem 1-1
+
+---- VAR y  decision variables for Problem 1-2
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .             5.0000        +INF             .          
+2          .              .            +INF            1.0000      
+3          .             3.0000        +INF             .          
+4          .             2.0000        +INF             .          
+5          .              .            +INF            1.0000      
+
+---- VAR e2_pos  positive error variables for Problem 1-2
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .              .            +INF            1.0000      
+2          .             8.0000        +INF             .          
+3          .              .            +INF            1.0000      
+4          .              .            +INF            1.0000      
+5          .             4.0000        +INF             .          
+
+---- VAR e2_neg  negative error variables for Problem 1-2
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .              .            +INF            1.0000      
+2          .              .            +INF            1.0000      
+3          .              .            +INF            1.0000      
+4          .              .            +INF            1.0000      
+5          .              .            +INF            1.0000      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR z2                -INF           12.0000        +INF             .          
+
+  z2  objective function for Problem 1-2
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 13
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     86 VARIABLE y.L  decision variables for Problem 1-2
+
+1 5.000,    3 3.000,    4 2.000
+
+
+----     86 VARIABLE e2_pos.L  positive error variables for Problem 1-2
+
+2 8.000,    5 4.000
+
+
+----     86 VARIABLE e2_neg.L  negative error variables for Problem 1-2
+
+                      ( ALL       0.000 )
+
+
+----     86 VARIABLE z2.L                  =       12.000  objective function for Problem 1-2
+
+
+EXECUTION TIME       =        0.069 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+
+
+USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
+      COMPSCI  735 - 01  OPTIMIZATION: TECHNIQUES AND APPLICATIODCE1755
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework10/gams/hw10-1.gms
+Output     /home/carlitos/Documents/School/Summer2024/cs735_optimization_techniques_and_applications/homework10/output/hw10-1.lst
