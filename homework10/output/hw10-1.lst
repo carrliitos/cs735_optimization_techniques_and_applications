@@ -1,4 +1,4 @@
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 1
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:15:10 Page 1
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 C o m p i l a t i o n
 
@@ -91,8 +91,8 @@ C o m p i l a t i o n
   86  Display y.l, e2_pos.l, e2_neg.l, z2.l;
 
 
-COMPILATION TIME     =        0.000 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 2
+COMPILATION TIME     =        0.001 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:15:10 Page 2
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Equation Listing    SOLVE abs_diff Using LP From line 47
 
@@ -123,7 +123,7 @@ constr_neg(3)..  x(1) - x(2) + x(3) + e_neg(3) =G= 7 ; (LHS = 0, INFES = 7 ****)
      
 REMAINING 4 ENTRIES SKIPPED
 
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 3
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:15:10 Page 3
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Column Listing      SOLVE abs_diff Using LP From line 47
 
@@ -221,7 +221,7 @@ z
                 (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
         1       obj
 
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 4
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:15:10 Page 4
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Range Statistics    SOLVE abs_diff Using LP From line 47
 
@@ -232,7 +232,7 @@ RHS       [min, max] : [ 6.000E+00, 1.700E+01] - Zero values observed as well
 Bound     [min, max] : [        NA,        NA] - Zero values observed as well
 Matrix    [min, max] : [ 1.000E+00, 9.000E+00]
 
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 5
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:15:10 Page 5
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Model Statistics    SOLVE abs_diff Using LP From line 47
 
@@ -244,8 +244,8 @@ BLOCKS OF VARIABLES           4     SINGLE VARIABLES           19
 NON ZERO ELEMENTS            77
 
 
-GENERATION TIME      =        0.003 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 6
+GENERATION TIME      =        0.007 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:15:10 Page 6
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Solution Report     SOLVE abs_diff Using LP From line 47
 
@@ -260,7 +260,7 @@ Solution Report     SOLVE abs_diff Using LP From line 47
 **** MODEL STATUS      1 Optimal
 **** OBJECTIVE VALUE               17.1954
 
- RESOURCE USAGE, LIMIT          0.020 10000000000.000
+ RESOURCE USAGE, LIMIT          0.018 10000000000.000
  ITERATION COUNT, LIMIT         4    2147483647
 
                            LOWER          LEVEL          UPPER         MARGINAL
@@ -336,7 +336,7 @@ Solution Report     SOLVE abs_diff Using LP From line 47
 **** REPORT SUMMARY :        0     NONOPT
                              0 INFEASIBLE
                              0  UNBOUNDED
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 7
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:15:10 Page 7
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 E x e c u t i o n
 
@@ -357,7 +357,7 @@ E x e c u t i o n
 
 
 ----     49 VARIABLE z.L                   =       17.195  objective function for Problem 1-1
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 8
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:15:10 Page 8
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Equation Listing    SOLVE abs_value_min Using LP From line 84
 
@@ -415,7 +415,7 @@ constr2_neg(3)..  y(3) + e2_neg(3) =G= 3 ; (LHS = 0, INFES = 3 ****)
      
 REMAINING 2 ENTRIES SKIPPED
 
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 9
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:15:10 Page 9
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Column Listing      SOLVE abs_value_min Using LP From line 84
 
@@ -577,7 +577,7 @@ z2
                 (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
         1       obj2
 
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 10
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:15:10 Page 10
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Range Statistics    SOLVE abs_value_min Using LP From line 84
 
@@ -588,7 +588,7 @@ RHS       [min, max] : [ 2.000E+00, 1.700E+01] - Zero values observed as well
 Bound     [min, max] : [        NA,        NA] - Zero values observed as well
 Matrix    [min, max] : [ 1.000E+00, 9.000E+00]
 
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 11
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:15:10 Page 11
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Model Statistics    SOLVE abs_value_min Using LP From line 84
 
@@ -601,7 +601,7 @@ NON ZERO ELEMENTS           108
 
 
 GENERATION TIME      =        0.002 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 12
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:15:10 Page 12
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Solution Report     SOLVE abs_value_min Using LP From line 84
 
@@ -754,7 +754,7 @@ Solution Report     SOLVE abs_value_min Using LP From line 84
 **** REPORT SUMMARY :        0     NONOPT
                              0 INFEASIBLE
                              0  UNBOUNDED
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:07:03 Page 13
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:15:10 Page 13
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 E x e c u t i o n
 
@@ -777,7 +777,7 @@ E x e c u t i o n
 ----     86 VARIABLE z2.L                  =       12.000  objective function for Problem 1-2
 
 
-EXECUTION TIME       =        0.069 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+EXECUTION TIME       =        0.089 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
 
 
 USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN

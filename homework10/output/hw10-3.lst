@@ -1,12 +1,12 @@
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:13:44 Page 1
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:16:07 Page 1
 Einstein's Riddle
 C o m p i l a t i o n
 
 
 
 
-COMPILATION TIME     =        0.002 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:13:44 Page 2
+COMPILATION TIME     =        0.000 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:16:07 Page 2
 Einstein's Riddle
 Range Statistics    SOLVE einstein Using MIP From line 78
 
@@ -17,7 +17,7 @@ RHS       [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
 Bound     [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
 Matrix    [min, max] : [ 1.000E+00, 1.000E+00]
 
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:13:44 Page 3
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:16:07 Page 3
 Einstein's Riddle
 Model Statistics    SOLVE einstein Using MIP From line 78
 
@@ -29,8 +29,8 @@ BLOCKS OF VARIABLES           2     SINGLE VARIABLES       15,626
 NON ZERO ELEMENTS       163,751     DISCRETE VARIABLES     15,625
 
 
-GENERATION TIME      =        0.120 SECONDS     13 MB  47.2.0 54a8429d LEX-LEG
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:13:44 Page 4
+GENERATION TIME      =        0.116 SECONDS     13 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:16:07 Page 4
 Einstein's Riddle
 Solution Report     SOLVE einstein Using MIP From line 78
 
@@ -45,7 +45,7 @@ Solution Report     SOLVE einstein Using MIP From line 78
 **** MODEL STATUS      1 Optimal
 **** OBJECTIVE VALUE                1.0000
 
- RESOURCE USAGE, LIMIT          0.105 10000000000.000
+ RESOURCE USAGE, LIMIT          0.106 10000000000.000
  ITERATION COUNT, LIMIT         0    2147483647
 --- GAMS/CPLEX licensed for continuous and discrete problems.
 --- GMO setup time: 0.00s
@@ -81,7 +81,7 @@ Relative gap:            0.000000
 **** REPORT SUMMARY :        0     NONOPT
                              0 INFEASIBLE
                              0  UNBOUNDED
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:13:44 Page 5
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:16:07 Page 5
 Einstein's Riddle
 E x e c u t i o n
 
@@ -96,7 +96,7 @@ h5.white .dane     .tea   .blends    .horse 1
 
 
 
-EXECUTION TIME       =        0.338 SECONDS     13 MB  47.2.0 54a8429d LEX-LEG
+EXECUTION TIME       =        0.331 SECONDS     13 MB  47.2.0 54a8429d LEX-LEG
 
 
 USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN

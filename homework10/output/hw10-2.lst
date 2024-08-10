@@ -1,4 +1,4 @@
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:10:21 Page 1
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:15:36 Page 1
 Advertising
 C o m p i l a t i o n
 
@@ -58,8 +58,8 @@ C o m p i l a t i o n
   54  display totalAdTime;
 
 
-COMPILATION TIME     =        0.000 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:10:21 Page 2
+COMPILATION TIME     =        0.001 SECONDS      3 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:15:36 Page 2
 Advertising
 Equation Listing    SOLVE w1 Using NLP From line 46
 
@@ -78,7 +78,7 @@ witches_eq..  (83848944280)*x(ad1) + (109944067600)*x(ad2) + (116551456360)*x(ad
 
 wizards_eq..  (116151055720)*x(ad1) + (90055932400)*x(ad2) + (83448543640)*x(ad3) + (161780491380)*x(ad4) + (123370462540)*x(ad5) + (99856908040)*x(ad6) + (120389634280)*x(ad7) + (127652261340)*x(ad8) + (164093127300)*x(ad9) + (162851140680)*x(ad10) + (94362644680)*x(ad11) + (86636855740)*x(ad12) + (142305079380)*x(ad13) + (102172128100)*x(ad14) + (155201580360)*x(ad15) + (172938278580)*x(ad16) + (111147263980)*x(ad17) + (127206909160)*x(ad18) + (159686983680)*x(ad19) + (169074024420)*x(ad20) =G= 8000 ; (LHS = 0, INFES = 8000 ****)
      
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:10:21 Page 3
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:15:36 Page 3
 Advertising
 Column Listing      SOLVE w1 Using NLP From line 46
 
@@ -111,7 +111,7 @@ cost
                 (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
         1       obj_eq
 
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:10:21 Page 4
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:15:36 Page 4
 Advertising
 Range Statistics    SOLVE w1 Using NLP From line 46
 
@@ -122,7 +122,7 @@ RHS       [min, max] : [ 5.000E+03, 8.000E+03] - Zero values observed as well
 Bound     [min, max] : [        NA,        NA] - Zero values observed as well
 Matrix    [min, max] : [ 1.000E+00, 1.729E+11]
 
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:10:21 Page 5
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:15:36 Page 5
 Advertising
 Model Statistics    SOLVE w1 Using NLP From line 46
 
@@ -135,8 +135,8 @@ NON ZERO ELEMENTS            61     NON LINEAR N-Z             40
 CODE LENGTH                 125     CONSTANT POOL              56
 
 
-GENERATION TIME      =        0.039 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:10:21 Page 6
+GENERATION TIME      =        0.003 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:15:36 Page 6
 Advertising
 Solution Report     SOLVE w1 Using NLP From line 46
 
@@ -151,7 +151,7 @@ Solution Report     SOLVE w1 Using NLP From line 46
 **** MODEL STATUS      2 Locally Optimal
 **** OBJECTIVE VALUE          1815587.7245
 
- RESOURCE USAGE, LIMIT          0.227 10000000000.000
+ RESOURCE USAGE, LIMIT          0.006 10000000000.000
  ITERATION COUNT, LIMIT         9    2147483647
  EVALUATION ERRORS              0             0
 --- *** This solver runs with a community license.
@@ -216,8 +216,8 @@ Final optimality error  (abs / rel) =   5.46e-08 / 5.46e-10
 # of function evaluations           =         11
 # of gradient evaluations           =         11
 # of Hessian evaluations            =          9
-Total program time (secs)           =       0.22630 (     0.018 CPU time)
-Time spent in evaluations (secs)    =       0.00076
+Total program time (secs)           =       0.00546 (     0.005 CPU time)
+Time spent in evaluations (secs)    =       0.00019
 
 ===============================================================================
 
@@ -262,7 +262,7 @@ ad20          .          1311.9838        +INF      4.465551E-11
                              0 INFEASIBLE
                              0  UNBOUNDED
                              0     ERRORS
-GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 18:10:21 Page 7
+GAMS 47.2.0  54a8429d Jul 1, 2024           LEX-LEG x86 64bit/Linux - 08/09/24 20:15:36 Page 7
 Advertising
 E x e c u t i o n
 
@@ -275,7 +275,7 @@ ad1   717.161,    ad2   404.356,    ad3   342.602,    ad4  1633.257,    ad5   84
 ----     54 PARAMETER totalAdTime          =    18441.250  
 
 
-EXECUTION TIME       =        0.811 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
+EXECUTION TIME       =        0.048 SECONDS      4 MB  47.2.0 54a8429d LEX-LEG
 
 
 USER: University of Wisconsin-Whitewater             G240417|0002AO-GEN
